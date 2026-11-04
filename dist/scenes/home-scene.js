@@ -11,7 +11,7 @@ export const homeScene = {
   pond: HOME_POND,
   portal: { to: PROJECT_WORLD, label: "Explore the projects world" },
   signs: HOME_SIGNS,
-  location: "Welcome clearing · Meet Ethan, then find the pond",
+  location: "",
   getSurfaceAt: () => "grass",
   build(scene) {
     createHomeWorld(scene.root, scene.collisions);

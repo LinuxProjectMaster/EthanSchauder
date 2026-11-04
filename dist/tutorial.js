@@ -1,4 +1,4 @@
-/** A compact movement hint, shown below the world until dismissed. */
+/** A compact movement hint that disappears when the player starts moving. */
 export function createTutorial() {
   const card = document.createElement("aside");
   card.id = "movement-tutorial";
@@ -27,8 +27,9 @@ export function createTutorial() {
   };
   help.onclick = () => { dismissed = false; card.hidden = !ready; help.hidden = true; };
   return {
-    update({ enabled }) {
+    update({ enabled, traveled = 0, turned = 0, height = 0 }) {
       ready = enabled;
+      if (enabled && (traveled > .001 || Math.abs(turned) > .001 || height > .01)) dismissed = true;
       card.hidden = !enabled || dismissed;
       help.hidden = !enabled || !dismissed;
     },

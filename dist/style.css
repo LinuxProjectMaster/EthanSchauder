@@ -329,3 +329,5 @@ body.section-view > :not(#section-page):not(script):not(style) { display: none !
   .section-article { padding-top: 48px; }
   .section-mark { font-size: 220px; right: 10px; top: 30px; }
 }
+
+#realm-location:empty { display: none; }

@@ -280,7 +280,7 @@ body {
 #section-page a:hover { text-decoration: underline; text-underline-offset: 6px; }
 .section-article {
   position: relative;
-  min-height: calc(100dvh - 80px);
+  min-height: calc(100dvh - 100px);
   max-width: 1240px;
   margin: auto;
   padding: clamp(52px, 9vh, 110px) clamp(24px, 7vw, 100px) 80px;
@@ -304,8 +304,10 @@ body {
 .section-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
 .section-links:empty { display: none; }
 #section-page .section-links a { border: 1px solid var(--section-ink); padding: 14px 22px; border-radius: 3px; font-size: 14px; overflow-wrap: anywhere; }
-.section-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; padding: 28px clamp(24px, 7vw, 100px); border-top: 1px solid var(--section-line); font-size: 13px; }
-.section-next { text-transform: capitalize; }
+.section-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 16px 24px; padding: 24px clamp(24px, 7vw, 100px); border-top: 1px solid var(--section-line); font-size: 13px; }
+#section-page .section-return { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 14px 22px; border: 1px solid var(--section-ink); border-radius: 5px; background: var(--section-ink); color: #faf8f5; font: 14px/1.4 "Lora", Georgia, serif; transition: background .18s ease, color .18s ease; }
+#section-page .section-return:hover { background: transparent; color: var(--section-ink); text-decoration: none; }
+.section-footer p { margin: 0; color: var(--section-muted); line-height: 1.6; }
 #section-page a:focus-visible { outline: 2px solid var(--section-ink); outline-offset: 7px; }
 @media (max-width: 650px) {
   .section-article { padding-top: 48px; }

@@ -66,9 +66,11 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
       <div class="section-technologies"></div>
       <div class="section-links"></div>
     </article>
-    <footer class="section-footer"><a href="#">← Continue exploring</a><a class="section-next"></a></footer>`;
+    <footer class="section-footer">
+      <a class="section-return" href="#">← Back to the world</a>
+      <p>Explore the world to discover other pages.</p>
+    </footer>`;
   document.body.append(page);
-  const homeSections = signs.filter((sign) => sign.runic);
   const slug = (sign) => sign.projectId ?? sign.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   const route = (sign) => `#/section/${slug(sign)}`;
   const dust = createRuneDust();
@@ -166,11 +168,6 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
       if (item.url.startsWith("https:")) { link.target = "_blank"; link.rel = "noopener noreferrer"; }
       links.append(link);
     }
-    const siblings = sign.runic ? homeSections : signs.filter((entry) => entry.projectId);
-    const next = siblings[(siblings.indexOf(sign) + 1) % siblings.length];
-    const nextLink = page.querySelector(".section-next");
-    nextLink.hidden = !next || next === sign;
-    if (next) { nextLink.href = route(next); nextLink.textContent = `${next.title.toLowerCase()} →`; }
     for (const element of document.body.children) {
       if (element !== page && !inertElements.has(element)) {
         inertElements.set(element, element.inert);

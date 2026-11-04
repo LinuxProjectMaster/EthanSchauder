@@ -2,7 +2,6 @@ import { createRuneDust, isOnRune } from "./runic-rocks.js";
 import * as THREE from "./vendor/three.module.js";
 import { createPrimitives } from "./geometry.js";
 
-import { createSignModalAnimation } from "./sign-modal-animation.js";
 
 /** Wooden trail signs, proximity prompts, and a keyboard-accessible reading panel. */
 export function createSignboards(scene, collisions, signData) {
@@ -49,129 +48,191 @@ export function createSignboards(scene, collisions, signData) {
   }
 }
 
-/** One shared reading panel for both realms; only active signs can be opened. */
+/** Full-page section routes, reached from the stones or project trail. */
 export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate = () => ({ x: innerWidth / 2, y: innerHeight * .65 })) {
   const prompt = document.createElement("button");
   prompt.id = "sign-prompt";
   prompt.hidden = true;
   document.body.append(prompt);
-  const dialog = document.createElement("dialog");
-  dialog.id = "sign-dialog";
-  dialog.setAttribute("aria-labelledby", "sign-title");
-  dialog.innerHTML = `
-    <span class="sign-bolt top-left" aria-hidden="true"></span>
-    <span class="sign-bolt bottom-left" aria-hidden="true"></span>
-    <span class="sign-bolt bottom-right" aria-hidden="true"></span>
-    <button class="sign-close" aria-label="Close sign">×</button>
-    <div class="sign-content">
-      <p class="sign-label">ALONG THE TRAIL</p>
-      <h2 id="sign-title"></h2>
-      <span class="sign-divider" aria-hidden="true">✦</span>
-      <p class="sign-body"></p>
-      <p class="sign-technologies"></p>
-      <div class="sign-contact-links"></div>
-      <a class="sign-project-link" target="_blank" rel="noopener noreferrer" hidden></a>
-      <button class="sign-continue">Back to the trail <span aria-hidden="true">↵</span></button>
-    </div>`;
-  document.body.append(dialog);
-  const modalAnimation = createSignModalAnimation(dialog);
+  const page = document.createElement("main");
+  page.id = "section-page";
+  page.hidden = true;
+  page.innerHTML = `
+    <header class="section-header">
+      <a class="section-brand" href="#">ETHAN SCHAUDER <span>University of Virginia</span></a>
+      <nav aria-label="Portfolio sections"></nav>
+      <a class="section-return" href="#">← Back to the world</a>
+    </header>
+    <article class="section-article" aria-labelledby="section-title">
+      <div class="section-mark" aria-hidden="true">✧</div>
+      <p class="section-eyebrow"></p>
+      <h1 id="section-title" tabindex="-1"></h1>
+      <div class="section-copy"></div>
+      <div class="section-technologies"></div>
+      <div class="section-links"></div>
+    </article>
+    <footer class="section-footer"><a href="#">← Continue exploring</a><a class="section-next"></a></footer>`;
+  document.body.append(page);
+  const homeSections = signs.filter((sign) => sign.runic);
+  const slug = (sign) => sign.projectId ?? sign.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const route = (sign) => `#/section/${slug(sign)}`;
+  for (const sign of homeSections) {
+    const link = document.createElement("a");
+    link.href = route(sign);
+    link.textContent = sign.title.toLowerCase();
+    page.querySelector("nav").append(link);
+  }
   const dust = createRuneDust();
   let pending = false;
   let occupiedRune = null;
   let nearest = null;
   let activeSign = null;
-  dialog.addEventListener("close", () => {
-    if (activeSign?.projectId) onProjectRead(activeSign);
-    activeSign = null;
-  });
+  let lastFocus = null;
+  let inertElements = new Map();
 
+  function completePrevious() {
+    const previous = activeSign;
+    activeSign = null;
+    if (previous?.projectId) onProjectRead(previous);
+  }
+  function hidePage() {
+    if (!activeSign) return;
+    completePrevious();
+    page.hidden = true;
+    document.body.classList.remove("section-view");
+    for (const [element, inert] of inertElements) element.inert = inert;
+    inertElements.clear();
+    document.title = "Little Roamer";
+    if (lastFocus?.isConnected) lastFocus.focus({ preventScroll: true });
+  }
+  function render(sign) {
+    if (activeSign && activeSign !== sign) completePrevious();
+    if (page.hidden) lastFocus = document.activeElement;
+    activeSign = sign;
+    page.classList.toggle("project-page", !sign.runic);
+    const title = sign.title.toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase());
+    page.querySelector("h1").textContent = title;
+    page.querySelector(".section-eyebrow").textContent = sign.label ?? "A LITTLE FURTHER ALONG THE TRAIL";
+    const copy = page.querySelector(".section-copy");
+    copy.replaceChildren();
+    // Give the original copy room to breathe without changing its content.
+    const sentences = sign.text.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g) ?? [sign.text];
+    for (let i = 0; i < sentences.length; i += 2) {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = sentences.slice(i, i + 2).join("").trim();
+      copy.append(paragraph);
+    }
+    const tech = page.querySelector(".section-technologies");
+    tech.replaceChildren();
+    tech.hidden = !sign.technologies;
+    for (const name of (sign.technologies ?? "").split(" · ").filter(Boolean)) {
+      const tag = document.createElement("span");
+      tag.textContent = name;
+      tech.append(tag);
+    }
+    const links = page.querySelector(".section-links");
+    links.replaceChildren();
+    const items = [...(sign.links ?? [])];
+    if (sign.url) items.push({ label: sign.linkLabel ?? "View project on Devpost ↗", url: sign.url });
+    for (const item of items) {
+      const link = document.createElement("a");
+      link.href = item.url;
+      link.textContent = item.label;
+      if (item.url.startsWith("https:")) { link.target = "_blank"; link.rel = "noopener noreferrer"; }
+      links.append(link);
+    }
+    page.querySelectorAll("nav a").forEach((link) => {
+      if (link.getAttribute("href") === route(sign)) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+    const siblings = sign.runic ? homeSections : signs.filter((entry) => entry.projectId);
+    const next = siblings[(siblings.indexOf(sign) + 1) % siblings.length];
+    const nextLink = page.querySelector(".section-next");
+    nextLink.hidden = !next || next === sign;
+    if (next) { nextLink.href = route(next); nextLink.textContent = `${next.title.toLowerCase()} →`; }
+    for (const element of document.body.children) {
+      if (element !== page && !inertElements.has(element)) {
+        inertElements.set(element, element.inert);
+        element.inert = true;
+      }
+    }
+    page.hidden = false;
+    document.body.classList.add("section-view");
+    document.title = `${title} · Ethan Schauder`;
+    page.scrollTop = 0;
+    page.querySelector("h1").focus({ preventScroll: true });
+    prompt.hidden = true;
+  }
+  function syncRoute() {
+    dust.cancel();
+    pending = false;
+    const selected = signs.find((sign) => route(sign) === location.hash);
+    if (selected) render(selected);
+    else hidePage();
+  }
+  function navigate(sign) {
+    if (location.hash === route(sign)) render(sign);
+    else { history.pushState(null, "", route(sign)); syncRoute(); }
+  }
+  function returnToWorld() {
+    history.pushState(null, "", location.pathname + location.search);
+    syncRoute();
+  }
   function open() {
-    if (!nearest || dialog.open || pending) return;
+    if (!nearest || activeSign || pending) return;
     const selected = nearest;
     if (selected.runic) {
       occupiedRune = selected;
       pending = true;
       prompt.hidden = true;
-      const origin = onRuneActivate(selected);
-      dust.play(origin, () => { pending = false; reveal(selected); });
-    } else reveal(selected);
-  }
-
-  function reveal(nearest) {
-    activeSign = nearest;
-    dialog.classList.toggle("runic-panel", !!nearest.runic);
-    dialog.querySelector(".sign-close").setAttribute("aria-label", nearest.runic ? "Close rune" : "Close sign");
-    dialog.querySelector("h2").textContent = nearest.title;
-    dialog.querySelector(".sign-body").textContent = nearest.text;
-    dialog.querySelector(".sign-label").textContent =
-      nearest.label ?? "ALONG THE TRAIL";
-    const technologies = dialog.querySelector(".sign-technologies");
-    technologies.textContent = nearest.technologies ?? "";
-    technologies.hidden = !nearest.technologies;
-    const contacts = dialog.querySelector(".sign-contact-links");
-    contacts.replaceChildren();
-    for (const item of nearest.links ?? []) {
-      const anchor = document.createElement("a");
-      anchor.textContent = item.label;
-      anchor.href = item.url;
-      if (item.url.startsWith("https:")) { anchor.target = "_blank"; anchor.rel = "noopener noreferrer"; }
-      contacts.append(anchor);
-    }
-    const link = dialog.querySelector(".sign-project-link");
-    link.hidden = !nearest.url;
-    link.textContent = nearest.linkLabel ?? "View project on Devpost ↗";
-    if (nearest.url) link.href = nearest.url;
-    else link.removeAttribute("href");
-    dialog.querySelector(".sign-continue").innerHTML = nearest.realm === "home"
-      ? 'Back to the clearing <span aria-hidden="true">↵</span>'
-      : 'Back to the trail <span aria-hidden="true">↵</span>';
-    modalAnimation.open();
-    prompt.hidden = true;
+      dust.play(onRuneActivate(selected), () => { pending = false; navigate(selected); });
+    } else navigate(selected);
   }
   prompt.onclick = open;
-  dialog.querySelector(".sign-close").onclick = () => modalAnimation.close();
-  dialog.querySelector(".sign-continue").onclick = () => modalAnimation.close();
+  addEventListener("hashchange", syncRoute);
+  addEventListener("popstate", syncRoute);
   addEventListener("keydown", (event) => {
-    if (event.key !== "Enter" || event.repeat) return;
-    if (event.target.closest?.("a")) return;
-    if (!dialog.open && !nearest) return;
+    if (event.repeat) return;
+    if (event.key === "Escape" && (activeSign || pending)) {
+      event.preventDefault();
+      dust.cancel();
+      pending = false;
+      if (activeSign) returnToWorld();
+      return;
+    }
+    if (event.key !== "Enter" || activeSign || event.target.closest?.("a, button")) return;
+    if (!nearest) return;
     event.preventDefault();
-    if (dialog.open) modalAnimation.close();
-    else open();
+    open();
   });
-
+  syncRoute();
   return {
     close() {
       dust.cancel();
       pending = false;
       occupiedRune = null;
-      if (dialog.open) modalAnimation.close();
+      if (activeSign) { history.replaceState(null, "", location.pathname + location.search); hidePage(); }
       nearest = null;
       prompt.hidden = true;
     },
-    get isOpen() {
-      return dialog.open || pending;
-    },
+    get isOpen() { return !!activeSign || pending; },
     update(position, realm = "projects", enabled = true) {
       nearest = null;
       const standing = signs.find((sign) => sign.runic && sign.realm === realm && isOnRune(position, sign));
       if (!standing) occupiedRune = null;
       let distance = 4;
-      if (enabled && position.y < 0.1) {
+      if (enabled && position.y < .1 && !activeSign) {
         for (const sign of signs) {
           if ((sign.realm ?? "projects") !== realm) continue;
           const current = Math.hypot(position.x - sign.x, position.z - sign.z);
-          if (current < distance) {
-            nearest = sign;
-            distance = current;
-          }
+          if (current < distance) { nearest = sign; distance = current; }
         }
       }
-      if (enabled && standing && standing !== occupiedRune && !dialog.open && !pending) {
+      if (enabled && standing && standing !== occupiedRune && !activeSign && !pending) {
         nearest = standing;
         open();
       }
-      prompt.hidden = !nearest || dialog.open || pending;
+      prompt.hidden = !nearest || !!activeSign || pending;
       if (nearest) prompt.textContent = `↵  ${nearest.title}`;
     },
   };

@@ -267,217 +267,6 @@ body {
 #sign-prompt[hidden] {
   display: none;
 }
-#sign-dialog {
-  --wood-ink: #382718;
-  width: min(510px, calc(100% - 32px));
-  max-height: calc(100dvh - 36px);
-  overflow-y: auto;
-  border: 9px solid #795032;
-  border-radius: 9px 7px 10px 6px;
-  padding: 32px 34px 30px;
-  background-color: #c49a65;
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent 0 97px,
-      #57341c45 98px,
-      #f4d4a37a 100px,
-      transparent 103px
-    ),
-    repeating-linear-gradient(
-      2deg,
-      transparent 0 7px,
-      #784a2720 8px,
-      transparent 10px,
-      #f2d6ac25 12px,
-      transparent 15px
-    ),
-    radial-gradient(
-      ellipse at 85% 22%,
-      #80552b25 0 2px,
-      transparent 3px 12px,
-      #82562e1c 14px 16px,
-      transparent 17px 35px,
-      #67401e18 37px 39px,
-      transparent 41px
-    ),
-    linear-gradient(100deg, #b88a56, #d4ad79 32%, #c69b66 65%, #b78a55);
-  color: var(--wood-ink);
-  font-family: "Lora", Georgia, serif;
-  box-shadow:
-    inset 0 0 0 2px #f2d8a170,
-    inset 0 0 24px #673c2445,
-    0 5px 0 #4d311f,
-    0 9px 0 #3e2b1d,
-    0 24px 80px #152b2460;
-  transform-origin: center center;
-  will-change: transform, opacity;
-  scrollbar-color: #795032 #c49a65;
-}
-#sign-dialog::backdrop {
-  background: #1c302975;
-  backdrop-filter: blur(6px);
-}
-#sign-dialog .sign-close {
-  position: absolute;
-  top: 10px;
-  right: 11px;
-  width: 28px;
-  height: 28px;
-  border: 1px solid #5c3d26;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 25%, #c5b89a, #8d8067 72%, #645a47);
-  box-shadow:
-    0 2px 2px #49311c80,
-    inset 0 1px #efe4c4;
-  color: #403322;
-  font:
-    23px/23px Georgia,
-    serif;
-  cursor: pointer;
-}
-.sign-bolt {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 25%, #dac8a3, #998364 60%, #5f4b32);
-  box-shadow:
-    1px 2px 2px #50311b99,
-    inset 0 1px 1px #f9e8bc99;
-  pointer-events: none;
-}
-.sign-bolt::after {
-  content: "";
-  position: absolute;
-  left: 2px;
-  right: 2px;
-  top: 4px;
-  height: 1px;
-  background: #554329;
-  transform: rotate(-25deg);
-}
-.sign-bolt.top-left {
-  top: 12px;
-  left: 12px;
-}
-.sign-bolt.bottom-left {
-  bottom: 12px;
-  left: 12px;
-}
-.sign-bolt.bottom-right {
-  bottom: 12px;
-  right: 12px;
-}
-#sign-dialog .sign-label {
-  margin: 0 20px 12px 0;
-  font:
-    11px/1.65 "Bree Serif",
-    Georgia,
-    serif;
-  letter-spacing: 1.9px;
-  color: #67492b;
-  text-shadow: 0 1px #efd2a575;
-}
-#sign-dialog h2 {
-  margin: 0;
-  font:
-    400 clamp(25px, 4.2vw, 34px) / 1.1 "Bree Serif",
-    Georgia,
-    serif;
-  letter-spacing: 0.1px;
-  text-shadow:
-    0 1px 0 #f4d7aa95,
-    0 -1px 0 #5d381e55;
-  text-wrap: balance;
-}
-#sign-dialog .sign-divider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 18px 0 14px;
-  color: #765130;
-  font-size: 13px;
-}
-#sign-dialog .sign-divider::before,
-#sign-dialog .sign-divider::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: #72492d70;
-  box-shadow: 0 1px #f2d4a580;
-}
-#sign-dialog .sign-body {
-  font-size: 14px;
-  line-height: 1.85;
-  margin: 0;
-  color: #3d2d1d;
-  text-shadow: 0 1px #e9c69935;
-}
-#sign-dialog .sign-technologies {
-  font:
-    12px/1.8 "Bree Serif",
-    Georgia,
-    serif;
-  color: #624429;
-  margin-top: 18px;
-}
-#sign-dialog .sign-project-link {
-  display: block;
-  width: fit-content;
-  margin: 19px 0 0;
-  color: #382718;
-  font:
-    15px/1.6 "Bree Serif",
-    Georgia,
-    serif;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-}
-#sign-dialog .sign-project-link[hidden] {
-  display: none;
-}
-#sign-dialog .sign-continue {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 28px;
-  margin-top: 24px;
-  padding: 11px 17px;
-  border: 2px solid #563820;
-  border-radius: 4px;
-  background: linear-gradient(3deg, #694528, #845937 70%, #926640);
-  box-shadow:
-    inset 0 1px #ad805150,
-    0 3px 0 #4e311d;
-  color: #f3dfb3;
-  text-shadow: 0 -1px #3b2519;
-  cursor: pointer;
-  font:
-    15px/1.4 "Bree Serif",
-    Georgia,
-    serif;
-}
-#sign-dialog .sign-continue:hover {
-  filter: brightness(1.08);
-}
-#sign-dialog button:focus-visible,
-#sign-dialog a:focus-visible,
-#sign-prompt:focus-visible {
-  outline: 2px solid #f8e7bd;
-  outline-offset: 4px;
-}
-@media (max-width: 480px) {
-  #sign-dialog {
-    padding: 32px 23px 26px;
-    border-width: 7px;
-  }
-  #sign-dialog .sign-body {
-    font-size: 13px;
-    line-height: 1.8;
-  }
-}
-
 #checkpoint-toast {
   position: fixed;
   top: 26px;
@@ -624,30 +413,6 @@ body {
   pointer-events: none;
 }
 #rune-dust[hidden] { display: none; }
-#sign-dialog.runic-panel {
-  background: radial-gradient(ellipse at top, #504361, #292334 85%);
-  border-color: #8e74a7;
-  color: #f1e6ff;
-  box-shadow: 0 0 70px #ad6bda66, inset 0 0 35px #b991db22;
-}
-#sign-dialog.runic-panel::backdrop { background: #271736b8; }
-#sign-dialog.runic-panel .sign-bolt { display: none; }
-#sign-dialog.runic-panel h2,
-#sign-dialog.runic-panel .sign-label,
-#sign-dialog.runic-panel .sign-body,
-#sign-dialog.runic-panel .sign-technologies,
-#sign-dialog.runic-panel .sign-divider,
-#sign-dialog.runic-panel .sign-close { color: #ead8ff; text-shadow: none; }
-#sign-dialog.runic-panel .sign-continue {
-  background: #6a4c86;
-  color: #fff0ff;
-  border-color: #a284c0;
-}
-.sign-contact-links { display: grid; gap: 14px; margin-bottom: 20px; }
-.sign-contact-links:empty { display: none; }
-.sign-contact-links a { color: #edd5ff; overflow-wrap: anywhere; text-underline-offset: 4px; }
-#sign-dialog.runic-panel .sign-close { background: #5e4774; border-color: #a98abd; box-shadow: none; }
-
 #movement-tutorial {
   position: fixed;
   left: 50%;
@@ -708,4 +473,79 @@ body {
 .tutorial-dismiss:focus-visible, #controls-help:focus-visible { outline: 3px solid #758b5e; outline-offset: 4px; }
 @media (max-width: 380px) {
   #movement-tutorial { gap: 8px; padding: 10px; }
+}
+
+/* Section routes replace the world with a complete, scrollable page. */
+body.section-view > :not(#section-page):not(script):not(style) { display: none !important; }
+#section-page {
+  --section-ink: #352c43;
+  --section-muted: #73677e;
+  --section-line: #c9bdcf;
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  z-index: 110;
+  color: var(--section-ink);
+  background: radial-gradient(ellipse at 88% 32%, #e0d0ed80, transparent 50%), #f5f0f7;
+  font-family: "Lora", Georgia, serif;
+}
+#section-page[hidden] { display: none; }
+#section-page.project-page {
+  --section-ink: #304634;
+  --section-muted: #65715e;
+  --section-line: #c3ccba;
+  background: radial-gradient(ellipse at 88% 32%, #dce5ce80, transparent 50%), #f4f3e9;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 30px clamp(22px, 5vw, 80px);
+  border-bottom: 1px solid var(--section-line);
+}
+#section-page a { color: inherit; text-decoration: none; }
+#section-page a:hover { text-decoration: underline; text-underline-offset: 6px; }
+.section-brand { font: 16px/1.4 "Bree Serif", Georgia, serif; letter-spacing: .06em; }
+.section-brand span { display: block; font: 11px/1.8 "Lora", Georgia, serif; letter-spacing: .02em; color: var(--section-muted); }
+.section-header nav { display: flex; flex-wrap: wrap; gap: 24px; font-size: 13px; text-transform: capitalize; }
+.section-header nav a[aria-current] { text-decoration: underline !important; text-underline-offset: 7px; }
+.section-return { font-size: 12px; }
+.section-article {
+  position: relative;
+  min-height: calc(100dvh - 220px);
+  max-width: 1240px;
+  margin: auto;
+  padding: clamp(52px, 9vh, 110px) clamp(24px, 7vw, 100px) 80px;
+}
+.section-eyebrow { max-width: 760px; font: 11px/1.8 sans-serif; letter-spacing: .18em; color: var(--section-muted); margin: 0 0 24px; }
+#section-title {
+  position: relative;
+  max-width: 900px;
+  margin: 0 0 40px;
+  font: clamp(48px, 8vw, 108px)/1.04 "Bree Serif", Georgia, serif;
+  letter-spacing: -.045em;
+  overflow-wrap: break-word;
+  outline: none;
+}
+.section-copy { position: relative; max-width: 720px; font-size: clamp(17px, 1.8vw, 22px); line-height: 1.85; }
+.section-copy p { margin: 0 0 24px; }
+.section-mark { position: absolute; top: 55px; right: 45px; font: 320px/1 Georgia, serif; color: #9672b21a; pointer-events: none; }
+.section-technologies { display: flex; flex-wrap: wrap; gap: 8px; max-width: 720px; margin: 32px 0; }
+.section-technologies[hidden] { display: none; }
+.section-technologies span { border: 1px solid var(--section-line); border-radius: 20px; padding: 7px 13px; font-size: 12px; }
+.section-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
+.section-links:empty { display: none; }
+#section-page .section-links a { border: 1px solid var(--section-ink); padding: 14px 22px; border-radius: 3px; font-size: 14px; overflow-wrap: anywhere; }
+.section-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; padding: 28px clamp(24px, 7vw, 100px); border-top: 1px solid var(--section-line); font-size: 13px; }
+.section-next { text-transform: capitalize; }
+#section-page a:focus-visible { outline: 2px solid var(--section-ink); outline-offset: 7px; }
+@media (max-width: 650px) {
+  .section-header { gap: 20px; padding: 22px 24px; }
+  .section-header nav { order: 3; width: 100%; gap: 20px; }
+  .section-return { font-size: 11px; }
+  .section-article { padding-top: 48px; }
+  .section-mark { font-size: 220px; right: 10px; top: 30px; }
 }

@@ -14,6 +14,7 @@ export function createControls(canvas, onReset) {
   let pointer = null;
 
   addEventListener("keydown", (event) => {
+    if (globalThis.document?.body?.classList?.contains("section-view")) return;
     const key = event.key.toLowerCase();
     if ([" ", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(key))
       event.preventDefault();

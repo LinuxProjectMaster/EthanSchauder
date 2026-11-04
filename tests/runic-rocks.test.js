@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { isOnRune, RUNE_RADIUS } from "../dist/runic-rocks.js";
+import { isOnRune, RUNE_RADIUS } from "../dist/components/scenery/runic-rocks.js";
 import { HOME_SIGNS, HOME_SPAWN } from "../dist/realm-data.js";
 
 test("welcome rocks trigger only when the otter is grounded on their footprint", () => {

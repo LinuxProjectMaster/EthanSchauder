@@ -1,8 +1,8 @@
-import * as THREE from "./vendor/three.module.js";
-import { createPrimitives } from "./geometry.js";
-import { TRAILS, getSurfaceAt } from "./surfaces.js";
-import { TRAIL_SIGNS } from "./portfolio-data.js";
-import { createTrailArrows } from "./trail-arrows.js";
+import * as THREE from "../vendor/three.module.js";
+import { createPrimitives } from "../geometry.js";
+import { TRAILS, getSurfaceAt } from "../surfaces.js";
+import { TRAIL_SIGNS } from "../portfolio-data.js";
+import { createTrailArrows } from "../components/scenery/trail-arrows.js";
 
 /** Landscape with a broad portfolio trail and solid tree trunks. */
 export function createWorld(scene, collisions) {

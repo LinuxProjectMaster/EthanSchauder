@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "../dist/vendor/three.module.js";
 import { CollisionWorld } from "../dist/collisions.js";
-import { createWorld } from "../dist/world.js";
+import { createWorld } from "../dist/scenes/projects-world.js";
 
 test("only tree trunks register solid object boundaries", () => {
   const scene = new THREE.Scene();

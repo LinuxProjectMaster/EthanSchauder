@@ -22,7 +22,7 @@ export function getSurfaceAt(x, z) {
       const length = Math.hypot(dx, dz);
       const along = ((x - ax) * dx + (z - az) * dz) / length;
       const across = Math.abs((x - ax) * dz - (z - az) * dx) / length;
-      // Match the extended rectangular segment and rounded joint drawn in world.js.
+      // Match the extended rectangular segment and rounded joint drawn in scenes/projects-world.js.
       const onSegment =
         across <= halfWidth &&
         along >= -width * 0.14 &&

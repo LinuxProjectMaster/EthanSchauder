@@ -1,6 +1,6 @@
-import * as THREE from "./vendor/three.module.js";
-import { getTrailPoseAtZ } from "./surfaces.js";
-import { TRAIL_SIGNS } from "./portfolio-data.js";
+import * as THREE from "../../vendor/three.module.js";
+import { getTrailPoseAtZ } from "../../surfaces.js";
+import { TRAIL_SIGNS } from "../../portfolio-data.js";
 
 export function createTrailArrows(scene) {
   const shape = new THREE.Shape();

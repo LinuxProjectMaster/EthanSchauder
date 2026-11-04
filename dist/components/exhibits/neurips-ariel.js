@@ -1,6 +1,6 @@
-import * as THREE from "./vendor/three.module.js";
-import { createPrimitives, addDisplayBackFace } from "./geometry.js";
-import { createGroundText } from "./ground-text.js";
+import * as THREE from "../../vendor/three.module.js";
+import { createPrimitives, addDisplayBackFace } from "../../geometry.js";
+import { createGroundText } from "../scenery/ground-text.js";
 
 /** Project 02: an illustrated spectrum display, telescope, and silver medal.
  * The display is illustrative artwork, not fabricated notebook output. */

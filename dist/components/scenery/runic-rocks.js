@@ -1,4 +1,4 @@
-import * as THREE from "./vendor/three.module.js";
+import * as THREE from "../../vendor/three.module.js";
 import { createGroundText } from "./ground-text.js";
 
 export const RUNE_RADIUS = 1.35;
@@ -77,4 +77,3 @@ export function createRunicRocks(scene, rocks) {
   };
 }
 
-export { createRuneDust } from "./components/rune-dust.js";

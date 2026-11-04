@@ -1,6 +1,6 @@
-import * as THREE from "./vendor/three.module.js";
-import { createPrimitives } from "./geometry.js";
-import { createGroundText } from "./ground-text.js";
+import * as THREE from "../../vendor/three.module.js";
+import { createPrimitives } from "../../geometry.js";
+import { createGroundText } from "../scenery/ground-text.js";
 
 /** A walk-around encyclopedia and clock for the time-travelling knowledge project. */
 export function createChronopedia(scene, collisions) {

@@ -1,6 +1,6 @@
-import * as THREE from "./vendor/three.module.js";
-import { createPrimitives } from "./geometry.js";
-import { createGroundText } from "./ground-text.js";
+import * as THREE from "../vendor/three.module.js";
+import { createPrimitives } from "../geometry.js";
+import { createGroundText } from "../components/scenery/ground-text.js";
 
 /** An enclosed welcome clearing, independent of the long projects trail. */
 export function createHomeWorld(scene, collisions) {

@@ -1,4 +1,4 @@
-import * as THREE from "./vendor/three.module.js";
+import * as THREE from "../../vendor/three.module.js";
 
 /** Paint crisp, transparent lettering flat on the ground, like the trail arrow. */
 export function createGroundText(

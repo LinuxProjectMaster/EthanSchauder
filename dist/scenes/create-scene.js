@@ -13,8 +13,11 @@ export function createScene(definition) {
     ...definition,
     root,
     collisions: new CollisionWorld(),
-    signs: definition.signs ?? [],
-    add(component) { components.push(component); return component; },
+    signs: (definition.signs ?? []).map((sign) => ({ ...sign, realm: definition.id })),
+    add(component) {
+      if (component) components.push(component);
+      return component;
+    },
     update(elapsed, position, travelPose) {
       for (const component of components) component.update?.(elapsed, position, travelPose);
     },
@@ -27,6 +30,7 @@ export function createScene(definition) {
       for (const component of components) component.deactivate?.();
     },
   };
-  definition.build(scene);
+  for (const createComponent of definition.components ?? []) scene.add(createComponent(scene));
+  definition.build?.(scene);
   return scene;
 }

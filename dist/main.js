@@ -30,7 +30,7 @@ const footsteps = createFootsteps();
 const tutorial = createTutorial();
 const realms = createRealms(scene);
 const signs = createSignReader(realms.allSigns, (rock) => {
-  realms.current.runes?.activate(rock);
+  realms.current.onSignActivate?.(rock);
   const point = new THREE.Vector3(rock.x, .2, rock.z).project(camera);
   return { x: (point.x + 1) * innerWidth / 2, y: (1 - point.y) * innerHeight / 2 };
 });

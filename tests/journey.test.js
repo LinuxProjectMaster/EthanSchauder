@@ -6,8 +6,9 @@ import { createJourney } from "../dist/journey.js";
 import { createRealms } from "../dist/realms.js";
 import { HOME, PROJECT_WORLD, HOME_SPAWN, PROJECT_SPAWN, HOME_POND, HOME_SIGNS, isInPond } from "../dist/realm-data.js";
 import { PROJECTS } from "../dist/portfolio-data.js";
-import { createPond } from "../dist/pond.js";
+import { createPond } from "../dist/components/scenery/pond.js";
 import { CollisionWorld } from "../dist/collisions.js";
+import { exampleScene } from "../dist/scenes/example-scene.js";
 
 function mockDocument(t) {
   const original = globalThis.document;
@@ -222,4 +223,38 @@ test("projects can be left using the home button or pond", (t) => {
   assert.equal(journey.busy, true);
   for (let i = 0; i < 60; i++) journey.update(.04, true);
   assert.equal(realms.active, HOME, "the arrival pond also returns home");
+});
+
+test("a third component-based scene supports pond entry and return home without controller changes", (t) => {
+  const elements = mockDocument(t);
+  const originalListen = globalThis.addEventListener;
+  const originalMedia = globalThis.matchMedia;
+  globalThis.addEventListener = () => {};
+  globalThis.matchMedia = () => ({ matches: true });
+  t.after(() => {
+    globalThis.addEventListener = originalListen;
+    globalThis.matchMedia = originalMedia;
+  });
+  const realms = createRealms(new THREE.Scene(), [
+    { id: "lobby", spawn: { x: 0, y: 0, z: 6 }, pond: HOME_POND,
+      portal: { to: exampleScene.id, label: "Visit garden" }, components: [] },
+    { ...exampleScene, portal: { to: "lobby", label: "Return to lobby" } },
+  ]);
+  const player = new THREE.Group();
+  player.position.set(HOME_POND.x, 0, HOME_POND.z);
+  const journey = createJourney({ player, realms,
+    loadingScreen: { show() {}, hide() {}, setOpacity() {} },
+    canInteract: () => true, onDepart() {}, onSwitch() {} });
+  const pondPrompt = elements.find((element) => element.id === "pond-prompt");
+  const homeButton = elements.find((element) => element.id === "return-home");
+  journey.update(0, true);
+  pondPrompt.onclick();
+  for (let i = 0; i < 60; i++) journey.update(.04, true);
+  assert.equal(realms.active, "garden");
+  assert.deepEqual(player.position.toArray(), [0, 0, 6]);
+  journey.update(0, true);
+  assert.equal(homeButton.hidden, false);
+  homeButton.onclick();
+  for (let i = 0; i < 60; i++) journey.update(.04, true);
+  assert.equal(realms.active, "lobby", "home is the first registered scene, regardless of its ID");
 });

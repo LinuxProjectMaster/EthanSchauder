@@ -1,6 +1,6 @@
-import * as THREE from "./vendor/three.module.js";
-import { createPrimitives } from "./geometry.js";
-import { createPondWaterEffects } from "./components/pond-water-effects.js";
+import * as THREE from "../../vendor/three.module.js";
+import { createPrimitives } from "../../geometry.js";
+import { createPondWaterEffects } from "../pond-water-effects.js";
 
 /** Reusable shallow pool scenery. Surface animation lives in its own component. */
 export function createPond(scene, collisions, pond) {

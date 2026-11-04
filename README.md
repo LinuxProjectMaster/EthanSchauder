@@ -1,5 +1,7 @@
 # Little Roamer
 
+[Live portfolio](https://linuxprojectmaster.github.io/little-roamer/) · [Source](https://github.com/LinuxProjectMaster/little-roamer)
+
 A wordless Three.js / WebGL world with a animated quadruped otter. The scenery and loading graphics are created in code. The otter is a locally bundled GLB model from Gamideo’s CC0 Cozy Animals pack. Three.js is bundled locally; no install, external requests, or build step is required.
 
 ## Run
@@ -39,13 +41,15 @@ Each realm owns its scenery, signs, and collision map. Only one is visible and i
 
 ## Adding a scene
 
-Create a definition in `dist/scenes/` and add it to `SCENES` in `registry.js`. Declare a unique `id`, `spawn` (`x`, `y`, `z`), `heading`, `location`, `signs`, and `getSurfaceAt(x, z)`. Set `cameraOrbit` when the default view should face a different direction (it defaults to zero). Its `build(scene)` receives an independent Three.js `root`, `collisions`, and `add(component)` method. Add static meshes to `root`, register solid footprints with `collisions`, and register animated components with `add`.
+Scenes declare an ordered list of component factories. Copy the tested `dist/scenes/example-scene.js`, register it in `dist/scenes/registry.js`, and point an existing pond portal at its ID. Shared factories provide ponds, fences, signs, and runes; each scene owns its collision map and component lifecycle.
 
-Components may implement `update(elapsed, playerPosition, travelPose)`, `activate()`, and `deactivate()`. The manager updates only the active scene and runs lifecycle hooks when switching. Use `deactivate` to clear temporary effects. Scenes share the otter, controls, camera, and lighting without duplicating them.
+See [the scene authoring guide](docs/adding-scenes.md) for the complete component contract, reusable pieces, and entry/exit setup. The example is not registered in the live portfolio.
 
-For a pond portal, declare `pond` coordinates and `portal: { to: "destination-id", label: "Explore the next scene" }`, then compose `createPond` in `build`. The shared journey uses the target scene's spawn, plays the shared loader, and activates it under full cover. Scene manager code does not need a new branch.
+## Publishing
 
-`components/loading-screen.js` owns the single loading illustration used at startup and during travel; its styles live alongside it. `journey-state.js` owns transition timing, while `components/pond-water-effects.js` owns the flat surface spiral. `npm run check` discovers all scene/component JavaScript automatically. `tests/scenes.test.js` verifies registration and lifecycle behavior with a third scene.
+GitHub Pages publishes `dist/` through `.github/workflows/pages.yml` after every push to `main`. Syntax checks and the test suite must pass before deployment. No dependency installation or build is required. In repository Settings → Pages, choose GitHub Actions as the publishing source.
+
+All browser modules, assets, fonts, and styles use relative URLs, so the site works under a repository path such as `/little-roamer/`. Section routes use URL hashes and need no server rewrites. `.openai/hosting.json` retains the separate Sites identity; it is outside the Pages artifact.
 
 ## Code map
 
@@ -60,11 +64,13 @@ For a pond portal, declare `pond` coordinates and `portal: { to: "destination-id
 | `dist/scenes/registry.js` | Register scene definitions |
 | `dist/scenes/create-scene.js` | Shared scene/component lifecycle |
 | `dist/scenes/home-scene.js`, `dist/scenes/projects-scene.js` | Scene-specific composition, spawns, ponds, signs, and portals |
-| `dist/components/` | Reusable loading screen, water effects, rune dust, renderer, and follow camera |
-| `dist/home-world.js` | Welcome clearing, trees, lettering, and pond |
-| `dist/world.js` | Projects landscape, trails, trees, and trunk boundaries |
+| `dist/components/` | Shared scene factories, loading screen, water effects, rune dust, renderer, and follow camera |
+| `dist/components/scenery/` | Reusable pond, ground text, runes, signboards, and trail arrows |
+| `dist/components/exhibits/` | Project exhibit meshes and collision footprints |
+| `dist/scenes/home-world.js` | Welcome clearing, trees, lettering, and pond |
+| `dist/scenes/projects-world.js` | Projects landscape, trails, trees, and trunk boundaries |
 | `dist/boundaries.js` | Realm perimeter coordinates, visible fences, and playable limits |
-| `dist/pond.js` | Static shallow-pool scenery, composed with water effects |
+| `dist/components/scenery/pond.js` | Static shallow-pool scenery, composed with water effects |
 | `dist/journey-state.js` | Pure dive/return timeline and travel poses |
 | `dist/journey.js` | Enter interaction, travel sequencing, and return to home |
 | `dist/geometry.js` | Shared low-poly primitives and material caching |
@@ -78,7 +84,7 @@ For a pond portal, declare `pond` coordinates and `portal: { to: "destination-id
 | `server.js` | Local Node.js static server |
 | `tests/` | Movement, collisions, trail signs, realm isolation, and journey regression tests |
 
-Walking speed, sprint speed, turn speed, and acceleration are named constants in `movement.js`. Jump speed and gravity are at the top of `main.js`. The otter's collision radius is exported as `OTTER_RADIUS` in `otter.js` and reused by collision tests. Each solid prop registers its footprint in `world.js` next to the mesh that creates it.
+Walking speed, sprint speed, turn speed, and acceleration are named constants in `movement.js`. Jump speed and gravity are at the top of `main.js`. The otter's collision radius is exported as `OTTER_RADIUS` in `otter.js` and reused by collision tests. Each solid prop registers its footprint next to the mesh that creates it.
 
 Collision movement is subdivided into small steps to prevent tunneling. Multiple contact passes handle neighboring trees and allow sliding. Tree boundaries fit the visible trunks; foliage and trails are passable. The player boundary fits the otter's torso rather than its full tail length. Jumping does not bypass tree trunks. Outer world limits remain in place.
 
@@ -90,13 +96,13 @@ The otter asset source and license are recorded in `dist/assets/otter-CREDITS.md
 
 Grass footsteps use the user-supplied ElevenLabs recording, normalized and played louder. Path footsteps use Kenney’s CC0 recording. Both are bundled as browser-compatible WAV files. Audio starts after keyboard or pointer input. Grass plays the full six-second stereo recording at original speed with smooth volume fades. Path sounds follow paw contacts. Actual travel gates playback so idle, airborne, and fully blocked movement stay quiet. See `dist/assets/audio/CREDITS.md` for sources and edits.
 
-Sleep music is the bundled user-provided `leberch-sleep-music-587996.mp3`. It loops after the first interaction. Nearby signs show an Enter prompt; reading pauses the otter, and Enter or Escape returns to the world.
+Sleep music is bundled in `dist/assets/audio/sleep-theme.m4a`. It loops after the first interaction. Nearby signs show an Enter prompt; reading pauses the otter, and Enter or Escape returns to the world.
 
 ## Portfolio
 
 Large ground lettering at the entrance introduces Ethan Schauder, Computer Science at the University of Virginia, with interests in machine learning, full-stack development, and aerospace. `portfolio-data.js` stores this copy and the sign definitions. `ground-text.js` draws the lettering into transparent ground decals.
 
-The first sign features Proton Projector and links to https://devpost.com/software/proton-projector. Its description is based on the Devpost project page. `proton-projector.js` builds a stylized forecasting display, console, and solar sculpture with physical collision boundaries. The graph is illustrative, rather than live prediction data. The trail extends to z=160; world boundaries extend to z=170.
+The first sign features Proton Projector and links to https://devpost.com/software/proton-projector. Its description is based on the Devpost project page. `proton-projector.js` builds a stylized forecasting display, console, and solar sculpture with physical collision boundaries. The graph is illustrative, rather than live prediction data. The compact trail ends at z=54 inside the project fence.
 
 Project 02 is the NeurIPS Ariel Data Challenge 2025, based on Ethan's resume: silver medal and exoplanet transmission-spectrum modeling. Its second sign links to the supplied Kaggle submission notebook. `neurips-ariel.js` builds a solid telescope, an illustrative spectrum display, and a silver-medal marker on the right side of the path.
 

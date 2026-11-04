@@ -2,9 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as THREE from "../dist/vendor/three.module.js";
 import { CollisionWorld } from "../dist/collisions.js";
-import { createChronopedia } from "../dist/chronopedia.js";
-import { createNeuripsAriel } from "../dist/neurips-ariel.js";
-import { createProtonProjector } from "../dist/proton-projector.js";
+import { createChronopedia } from "../dist/components/exhibits/chronopedia.js";
+import { createNeuripsAriel } from "../dist/components/exhibits/neurips-ariel.js";
+import { createProtonProjector } from "../dist/components/exhibits/proton-projector.js";
 import {
   TRAIL_SIGNS,
   PROTON_PROJECTOR,

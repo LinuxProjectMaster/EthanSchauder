@@ -1,8 +1,9 @@
-import { HOME, PROJECT_WORLD, isInPond } from "./realm-data.js";
+import { isInPond } from "./realm-data.js";
 import { createTravel, sampleTravel } from "./journey-state.js";
 
 /** Portal input and travel sequencing; scene building and loading visuals stay outside. */
 export function createJourney({ player, realms, loadingScreen, canInteract, onDepart, onSwitch }) {
+  const homeId = realms.homeId ?? realms.active;
   const prompt = document.createElement("button");
   prompt.id = "pond-prompt";
   prompt.hidden = true;
@@ -19,7 +20,7 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
   homeButton.hidden = true;
   document.body.append(homeButton);
   homeButton.onclick = () => {
-    if (realms.active === PROJECT_WORLD && canInteract() && !travel) start(HOME);
+    if (realms.active !== homeId && canInteract() && !travel) start(homeId);
   };
 
   function start(target, spinPond = false) {
@@ -75,7 +76,7 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
         }
         return pose;
       }
-      homeButton.hidden = !(enabled && realms.active === PROJECT_WORLD);
+      homeButton.hidden = !(enabled && realms.active !== homeId);
       const { pond, portal } = realms.current;
       prompt.hidden = !(enabled && portal && pond && isInPond(player.position, pond));
       if (portal) prompt.textContent = `↵  ${portal.label}`;

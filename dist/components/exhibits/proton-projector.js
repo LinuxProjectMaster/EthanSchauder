@@ -1,6 +1,6 @@
-import * as THREE from "./vendor/three.module.js";
-import { createPrimitives, addDisplayBackFace } from "./geometry.js";
-import { createGroundText } from "./ground-text.js";
+import * as THREE from "../../vendor/three.module.js";
+import { createPrimitives, addDisplayBackFace } from "../../geometry.js";
+import { createGroundText } from "../scenery/ground-text.js";
 
 /** A stylized solar forecasting station: solid monitor, console, and sun sculpture. */
 export function createProtonProjector(scene, collisions) {

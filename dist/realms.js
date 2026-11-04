@@ -26,6 +26,7 @@ export function createRealms(parent, definitions = SCENES) {
   }
   activate(definitions[0].id);
   return {
+    homeId: definitions[0].id,
     get active() { return active; },
     get current() { return get(active); },
     get,

@@ -1,6 +1,6 @@
-import { readdir } from "node:fs/promises";
+import { access, readdir, readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 
 // Automatically include new scene/component modules; vendor files are kept intact.
 async function modules(directory) {
@@ -15,4 +15,9 @@ async function modules(directory) {
 for (const path of [...await modules("dist"), "server.js"]) {
   const result = spawnSync(process.execPath, ["--check", path], { stdio: "inherit" });
   if (result.status !== 0) process.exit(result.status ?? 1);
+  const source = await readFile(path, "utf8");
+  for (const match of source.matchAll(/(?:from\s+|import\s*)["'](\.[^"']+)["']/g)) {
+    try { await access(resolve(dirname(path), match[1])); }
+    catch { throw new Error(`Missing module ${match[1]} imported by ${path}`); }
+  }
 }

@@ -49,7 +49,7 @@ export function createSignboards(scene, collisions, signData) {
 }
 
 /** Full-page section routes, reached from the stones or project trail. */
-export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate = () => ({ x: innerWidth / 2, y: innerHeight * .65 })) {
+export function createSignReader(signs, onRuneActivate = () => ({ x: innerWidth / 2, y: innerHeight * .65 })) {
   const prompt = document.createElement("button");
   prompt.id = "sign-prompt";
   prompt.hidden = true;
@@ -110,17 +110,12 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
     };
   }
 
-  function completePrevious() {
-    const previous = activeSign;
-    activeSign = null;
-    if (previous?.projectId) onProjectRead(previous);
-  }
   function hidePage() {
     if (!activeSign || closing) return;
     closing = true;
     page.inert = true;
     transitionPage(false, () => {
-      completePrevious();
+      activeSign = null;
       page.hidden = true;
       closing = false;
       document.body.classList.remove("section-view");
@@ -131,7 +126,6 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
     });
   }
   function render(sign) {
-    if (activeSign && activeSign !== sign) completePrevious();
     if (page.hidden) lastFocus = document.activeElement;
     activeSign = sign;
     closing = false;

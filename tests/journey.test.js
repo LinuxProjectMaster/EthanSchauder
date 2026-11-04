@@ -6,7 +6,6 @@ import { createJourney } from "../dist/journey.js";
 import { createRealms } from "../dist/realms.js";
 import { HOME, PROJECT_WORLD, HOME_SPAWN, PROJECT_SPAWN, HOME_POND, HOME_SIGNS, isInPond } from "../dist/realm-data.js";
 import { PROJECTS } from "../dist/portfolio-data.js";
-import { createCheckpointTracker } from "../dist/checkpoint-state.js";
 import { createPond } from "../dist/pond.js";
 import { CollisionWorld } from "../dist/collisions.js";
 
@@ -113,7 +112,7 @@ test("home and project scenery have isolated visibility, signs, and collision wo
   assert.equal(realms.current.signs.filter((sign) => sign.projectId).length, PROJECTS.length);
 });
 
-test("Enter dives once, unique checkpoints return home once, and reset cancels travel", (t) => {
+test("Enter dives once, the home button returns, and reset cancels travel", (t) => {
   const elements = mockDocument(t);
   const originalListen = globalThis.addEventListener;
   const originalMedia = globalThis.matchMedia;
@@ -160,13 +159,7 @@ test("Enter dives once, unique checkpoints return home once, and reset cancels t
   assert.equal(realms.active, PROJECT_WORLD);
   assert.equal(journey.busy, false);
   assert.deepEqual(player.position.toArray(), [PROJECT_SPAWN.x, 0, PROJECT_SPAWN.z]);
-  const tracker = createCheckpointTracker(PROJECTS.map((project) => project.projectId));
-  for (const sign of [HOME_SIGNS[0], PROJECTS[1], PROJECTS[1], PROJECTS[0]]) {
-    if (tracker.mark(sign.projectId).isComplete) journey.returnHome();
-  }
-  assert.equal(journey.busy, false);
-  if (tracker.mark(PROJECTS[2].projectId).isComplete) journey.returnHome();
-  journey.returnHome();
+  elements.find((element) => element.id === "return-home").onclick();
   assert.equal(journey.busy, true);
   for (let i = 0; i < 110; i++) {
     journey.update(0.04, true);
@@ -175,7 +168,7 @@ test("Enter dives once, unique checkpoints return home once, and reset cancels t
   assert.equal(realms.active, HOME);
   assert.equal(journey.busy, false);
   assert.deepEqual(player.position.toArray(), [HOME_SPAWN.x, 0, HOME_SPAWN.z]);
-  assert.equal(departures, 3, "departure clears inputs at completion and at launch");
+  assert.equal(departures, 2, "each journey clears inputs once at launch");
   player.position.set(0, 0, -6);
   journey.update(0, true);
   enter();
@@ -190,7 +183,7 @@ test("Enter dives once, unique checkpoints return home once, and reset cancels t
 });
 
 
-test("projects can be left before any checkpoints, using the home button or pond", (t) => {
+test("projects can be left using the home button or pond", (t) => {
   const elements = mockDocument(t);
   const originalListen = globalThis.addEventListener;
   const originalMedia = globalThis.matchMedia;
@@ -228,5 +221,5 @@ test("projects can be left before any checkpoints, using the home button or pond
   pondPrompt.onclick();
   assert.equal(journey.busy, true);
   for (let i = 0; i < 60; i++) journey.update(.04, true);
-  assert.equal(realms.active, HOME, "the arrival pond also returns without checkpoint completion");
+  assert.equal(realms.active, HOME, "the arrival pond also returns home");
 });

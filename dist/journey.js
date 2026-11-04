@@ -13,14 +13,13 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
   document.body.append(location);
   let travel = null;
   let travelTime = 0;
-  let returnDelay = null;
   const homeButton = document.createElement("button");
   homeButton.id = "return-home";
   homeButton.textContent = "← Return home";
   homeButton.hidden = true;
   document.body.append(homeButton);
   homeButton.onclick = () => {
-    if (realms.active === PROJECT_WORLD && canInteract() && !travel && returnDelay === null) start(HOME);
+    if (realms.active === PROJECT_WORLD && canInteract() && !travel) start(HOME);
   };
 
   function start(target, spinPond = false) {
@@ -38,7 +37,7 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
   }
   function enterPortal() {
     const { portal, pond } = realms.current;
-    if (!portal || !pond || returnDelay !== null || !canInteract() || !isInPond(player.position, pond)) return;
+    if (!portal || !pond || !canInteract() || !isInPond(player.position, pond)) return;
     start(portal.to, true);
   }
   prompt.onclick = enterPortal;
@@ -48,28 +47,14 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
     enterPortal();
   });
   return {
-    get busy() { return !!travel || returnDelay !== null; },
-    returnHome() {
-      if (realms.active !== PROJECT_WORLD || travel || returnDelay !== null) return;
-      onDepart();
-      returnDelay = 1.2;
-      prompt.hidden = true;
-      homeButton.hidden = true;
-    },
+    get busy() { return !!travel; },
     cancel() {
       if (travel) loadingScreen.hide();
       travel = null;
-      returnDelay = null;
       prompt.hidden = true;
       homeButton.hidden = true;
     },
     update(dt, enabled) {
-      if (returnDelay !== null) {
-        returnDelay -= dt;
-        if (returnDelay > 0) return { waiting: true };
-        returnDelay = null;
-        start(HOME);
-      }
       if (travel) {
         travelTime += dt;
         const pose = sampleTravel(travel, travelTime);

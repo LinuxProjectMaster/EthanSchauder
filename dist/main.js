@@ -6,7 +6,6 @@ import { createFootsteps } from "./footsteps.js";
 import { advanceMovement } from "./movement.js";
 import { createThemeMusic } from "./theme-music.js";
 import { createSignReader } from "./signs.js";
-import { createCheckpoints } from "./checkpoints.js";
 import { createRealms } from "./realms.js";
 import { createJourney } from "./journey.js";
 import { HOME, HOME_SPAWN, isInPond } from "./realm-data.js";
@@ -30,8 +29,7 @@ createThemeMusic();
 const footsteps = createFootsteps();
 const tutorial = createTutorial();
 const realms = createRealms(scene);
-const checkpoints = createCheckpoints(() => journey.returnHome());
-const signs = createSignReader(realms.allSigns, (project) => checkpoints.complete(project), (rock) => {
+const signs = createSignReader(realms.allSigns, (rock) => {
   realms.current.runes?.activate(rock);
   const point = new THREE.Vector3(rock.x, .2, rock.z).project(camera);
   return { x: (point.x + 1) * innerWidth / 2, y: (1 - point.y) * innerHeight / 2 };

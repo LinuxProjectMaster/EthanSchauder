@@ -44,6 +44,7 @@ test("pond spin precedes the loading animation, which conceals the scene switch"
       const spinning = sampleTravel(travel, travel.anticipation * 0.75);
       assert.equal(spinning.realm, from);
       assert.equal(spinning.showLoader, false, "the pond spins before the loader appears");
+      assert.deepEqual(spinning.position, start, "travel keeps the otter still without a return hop");
       if (from === HOME) {
         assert.deepEqual(spinning.position, start, "the otter stays in the pool");
         assert.ok(spinning.swirl > 0);
@@ -167,7 +168,10 @@ test("Enter dives once, unique checkpoints return home once, and reset cancels t
   if (tracker.mark(PROJECTS[2].projectId).isComplete) journey.returnHome();
   journey.returnHome();
   assert.equal(journey.busy, true);
-  for (let i = 0; i < 110; i++) journey.update(0.04, true);
+  for (let i = 0; i < 110; i++) {
+    journey.update(0.04, true);
+    assert.equal(player.position.y, 0, "the otter stays grounded throughout the return");
+  }
   assert.equal(realms.active, HOME);
   assert.equal(journey.busy, false);
   assert.deepEqual(player.position.toArray(), [HOME_SPAWN.x, 0, HOME_SPAWN.z]);

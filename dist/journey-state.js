@@ -22,11 +22,9 @@ export function sampleTravel(travel, elapsed) {
     ? ease(clamp((time - travel.anticipation) / travel.fadeIn))
     : 1 - ease(clamp((time - travel.revealAt) / travel.reveal));
   const spin = clamp(time / travel.anticipation);
-  const jump = !travel.spinPond && anticipating && !travel.reducedMotion
-    ? Math.sin(spin * Math.PI) * 2.5 : 0;
   return {
     realm: switched ? travel.to : travel.from,
-    position: switched ? { ...travel.destination } : { ...travel.start, y: travel.start.y + jump },
+    position: switched ? { ...travel.destination } : { ...travel.start },
     pitch: 0,
     phase: anticipating ? "anticipation" : time < travel.revealAt ? "loading" : "arrival",
     swirl: travel.spinPond && !switched ? ease(spin) : 0,

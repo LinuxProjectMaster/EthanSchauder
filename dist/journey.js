@@ -26,7 +26,7 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
       reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches });
     travelTime = 0;
     prompt.hidden = true;
-    location.textContent = spinPond ? "The pond is stirring…" : "Trail complete · Jumping home…";
+    location.textContent = spinPond ? "The pond is stirring…" : "Trail complete · Returning home…";
   }
   function enterPortal() {
     const { portal, pond } = realms.current;

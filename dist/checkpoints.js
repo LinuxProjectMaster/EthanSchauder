@@ -65,7 +65,7 @@ export function createCheckpoints(onAllComplete = () => {}) {
       toast.querySelector("strong").textContent =
         `${progress.completed}/${progress.total} complete`;
       toast.querySelector("p").textContent = progress.isComplete
-        ? "All projects explored. Jumping back to the welcome clearing!"
+        ? "All projects explored. Returning to the welcome clearing!"
         : project.title;
       notificationAnimation = animate(toast, {
         y: reducedMotion() ? 0 : [-24, 0],

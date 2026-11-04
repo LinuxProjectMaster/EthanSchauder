@@ -97,7 +97,7 @@ function updatePlayer(dt, elapsed) {
   realms.update(elapsed, player.position, travelPose);
   if (travelPose) {
     controls.clearMovement();
-    otter.update(dt, elapsed, 0, !travelPose.waiting);
+    otter.update(dt, elapsed, 0, player.position.y > 0.01);
     player.rotation.x = travelPose.pitch ?? 0;
     footsteps.update("grass", 0, false);
     shadow.visible = false;

@@ -18,7 +18,7 @@ export const projectsScene = {
   pond: PROJECT_POND,
   signs: TRAIL_SIGNS.map((sign) => ({ ...sign, realm: PROJECT_WORLD })),
   portal: { to: HOME, label: "Return home" },
-  location: "Projects world · Return home whenever you like",
+  location: "Projects world",
   getSurfaceAt,
   build(scene) {
     const { root, collisions } = scene;

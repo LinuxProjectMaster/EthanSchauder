@@ -1,6 +1,6 @@
 const WALK_SPEED = 6;
 const RUN_SPEED = 9.5;
-const TURN_SPEED = Math.PI * 1.15;
+const TURN_SPEED = Math.PI * 0.75;
 const ACCELERATION = 10;
 
 /** Heading-based movement. Positive yaw turns left for a model facing +Z.

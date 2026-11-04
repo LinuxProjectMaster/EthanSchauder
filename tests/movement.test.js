@@ -59,7 +59,7 @@ test("back smoothly turns exactly 180 degrees in the last steering direction", (
 
 test("another back press during a turn does not extend the half turn", () => {
   const state = { heading: 0, speed: 0 };
-  for (let frame = 0; frame < 30; frame++) {
+  for (let frame = 0; frame < 60; frame++) {
     advanceMovement(state, { ...neutral, turnAround: frame < 2 }, 1 / 30);
   }
   close(state.heading, Math.PI);

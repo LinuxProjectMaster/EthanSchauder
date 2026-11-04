@@ -190,7 +190,8 @@ function updatePlayer(dt, elapsed) {
 const cameraTarget = new THREE.Vector3();
 const cameraOffset = new THREE.Vector3();
 function updateCamera(dt) {
-  const orbit = getRealmCameraOrbit(controls.state.orbit, realms.active);
+  // Keep the dragged viewing offset relative to the otter as it turns.
+  const orbit = controls.state.orbit + movement.heading - Math.PI;
   const introPose = cameraIntroDone
     ? null
     : getIntroCameraPose(

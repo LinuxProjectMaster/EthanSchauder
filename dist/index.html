@@ -1,11 +1,118 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#e9eddc"><title>Little Roamer — A small world, a little wonder</title><meta name="description" content="Take a little walk in a playful 3D world. Run, jump, and discover six hidden trail markers."><link rel="stylesheet" href="style.css"></head><body>
-<canvas id="world" aria-label="Interactive 3D world. Use WASD or arrow keys to move, Shift to sprint and Space to jump."></canvas>
-<header><a class="brand" href="./" aria-label="Little Roamer home"><span class="brandmark">✳</span><span>LITTLE<br>ROAMER<span class="edition">AN OPEN-WORLD PLAYGROUND</span></span></a><div class="tools"><span class="live"><i></i> TAKE YOUR TIME</span><button id="sound" title="Toggle ambient sound" aria-label="Enable ambient sound">♪<span id="soundLabel">SOUND OFF</span></button><button id="help" title="How to play" aria-label="How to play">?</button></div></header>
-<section class="intro"><p class="eyebrow">NOWHERE TO BE. PLENTY TO SEE.</p><h1>A small world.<br>A little wonder.</h1><p>Go for a wander. See what you find.</p><div class="location"><span>↗</span><span id="location">THE MEADOW</span><span class="location-line"></span><span id="coords">00, 00</span></div></section>
-<div id="toast" role="status">Welcome to your little corner of the world.</div>
-<div id="interact"><button id="explore"><kbd>E</kbd> <span id="interactLabel">Take a closer look</span> ↗</button></div>
-<footer><div class="instructions"><div class="keys"><kbd>W</kbd><div><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div></div><div class="controlcopy"><b>A little direction</b><p>Move around <span>·</span> <kbd>SHIFT</kbd> run <span>·</span> <kbd>SPACE</kbd> jump</p><small>Drag to look around &nbsp; / &nbsp; Scroll to zoom</small></div></div><div class="mapcard"><div class="maptop"><span>YOUR LITTLE ADVENTURE</span><button id="reset" title="Return to the meadow">↺</button></div><div class="mapbody"><canvas id="minimap" width="144" height="116" aria-label="Map of the world"></canvas><div><p class="count"><span id="count">0</span><span class="of"> / 6</span></p><p class="trail">trail markers found</p><div id="dots">○ ○ ○ ○ ○ ○</div></div></div></div></footer>
-<div class="mobile"><div id="pad"><button data-key="w" aria-label="Forward">↑</button><div><button data-key="a" aria-label="Left">←</button><button data-key="s" aria-label="Backward">↓</button><button data-key="d" aria-label="Right">→</button></div></div><button id="jump">JUMP ↗</button></div>
-<dialog id="modal"><button id="close" aria-label="Close dialog">×</button><p class="eyebrow" id="modalEyebrow">THE FIELD GUIDE</p><h2 id="modalTitle">Make yourself at home.</h2><div id="modalContent"></div><button class="primary" id="continue">Back to wandering ↗</button></dialog>
-<div id="loading"><span>✳</span><p>GROWING A LITTLE WORLD</p></div><script type="module" src="main.js"></script></body></html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#e9eddc" />
+    <title>Little Roamer</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <canvas
+      id="world"
+      aria-label="Ethan Schauder’s portfolio worlds. W or Up to walk forward, A/D or Left/Right to turn, S or Down to turn around, Shift to run, Space to jump, Step on the welcome runic rocks to read about Ethan, his education, interests, and contacts. Enter to read project signs or dive at the pond, R to return home. Read all three project signs to jump back home. Drag to rotate and scroll to zoom."
+    ></canvas>
+    <div id="loading" role="status" aria-label="Loading the world">
+      <div class="loader-glow"></div>
+      <div class="loader-scene">
+        <svg class="orbit" viewBox="0 0 440 360" fill="none" aria-hidden="true">
+          <ellipse class="orbit-back" cx="220" cy="212" rx="168" ry="72" />
+          <ellipse class="orbit-inner" cx="220" cy="212" rx="135" ry="52" />
+          <g class="land">
+            <path
+              d="M97 222 150 194 208 205 273 185 341 220 277 253 159 253Z"
+              fill="#6c815b"
+            />
+            <path
+              d="m97 222 62 31 118 0 64-33-17 24-46 37-118-2-48-33Z"
+              fill="#435942"
+            />
+            <path
+              d="m138 225 57-15 41 10 50-13 23 11-74 19-44-10-35 13Z"
+              fill="#c2b78c"
+            />
+            <g class="loader-tree">
+              <path d="M135 209v-37" stroke="#9b9267" stroke-width="5" />
+              <path d="m135 135-22 51h44Z" fill="#8aab77" />
+              <path d="m135 151-18 43h36Z" fill="#6e9165" />
+            </g>
+            <g class="loader-rock">
+              <path d="m290 229 9-13 16 3 7 12-18 6Z" fill="#b1ba97" />
+              <path d="m299 216 5 21-14-8Z" fill="#8c9f7f" />
+            </g>
+          </g>
+          <circle class="loader-sun" cx="294" cy="97" r="23" fill="#edc078" />
+          <circle
+            class="sun-halo"
+            cx="294"
+            cy="97"
+            r="33"
+            stroke="#edc078"
+            stroke-opacity=".2"
+          />
+          <g class="runner-wrap">
+            <path d="m196 178-38 17 41-5" fill="#986b47" />
+            <ellipse cx="216" cy="180" rx="27" ry="13" fill="#a87952" />
+            <ellipse cx="235" cy="176" rx="12" ry="15" fill="#e0c29a" />
+            <circle cx="241" cy="163" r="15" fill="#a87952" />
+            <circle cx="232" cy="151" r="4" fill="#986b47" />
+            <ellipse cx="252" cy="168" rx="11" ry="7" fill="#e0c29a" />
+            <circle cx="248" cy="160" r="2.4" fill="#283b2e" />
+            <circle cx="261" cy="166" r="3" fill="#283b2e" />
+            <path
+              d="m255 170 15 3m-15-1 13 7"
+              stroke="#f1dfbd"
+              stroke-width="1"
+            />
+            <g class="leg leg-front" style="transform-origin: 199px 183px">
+              <path
+                d="m199 183-4 17 8 2"
+                stroke="#986b47"
+                stroke-width="8"
+                stroke-linecap="round"
+              />
+            </g>
+            <g class="leg leg-back" style="transform-origin: 205px 183px">
+              <path
+                d="m205 183 6 16 7-1"
+                stroke="#986b47"
+                stroke-width="7"
+                stroke-linecap="round"
+              />
+            </g>
+            <g class="leg leg-back" style="transform-origin: 235px 184px">
+              <path
+                d="m235 184-4 17 8 1"
+                stroke="#a87952"
+                stroke-width="7"
+                stroke-linecap="round"
+              />
+            </g>
+            <g class="leg leg-front" style="transform-origin: 229px 184px">
+              <path
+                d="m229 184 5 17 8-1"
+                stroke="#a87952"
+                stroke-width="8"
+                stroke-linecap="round"
+              />
+            </g>
+          </g>
+          <g
+            class="speed-lines"
+            stroke="#edf0d9"
+            stroke-opacity=".3"
+            stroke-linecap="round"
+          >
+            <path d="M174 166h-19" />
+            <path d="M170 180h-29" />
+            <path d="M178 194h-16" />
+          </g>
+          <circle class="orbiter" cx="388" cy="212" r="5" fill="#edc078" />
+          <circle class="floating-dot" cx="80" cy="130" r="3" fill="#a1b18b" />
+        </svg>
+        <div class="load-track"><div></div></div>
+      </div>
+    </div>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

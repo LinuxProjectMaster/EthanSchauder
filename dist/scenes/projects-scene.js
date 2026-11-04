@@ -27,7 +27,7 @@ export const projectsScene = {
     createProtonProjector(root, collisions);
     createNeuripsAriel(root, collisions);
     createChronopedia(root, collisions);
-    createGroundText(root, { lines: ["THE PROJECT TRAIL", "EXPLORE · RETURN HOME ANYTIME"],
+    createGroundText(root, { lines: ["Projects"],
       x: 0, z: 10, width: 8, height: 1.2, angle: 0 });
     root.traverse((object) => { if (object.name === "ground-text") object.rotation.y += Math.PI; });
     createBoundaryFence(root, collisions, PROJECT_BOUNDARY);

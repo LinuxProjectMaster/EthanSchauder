@@ -7,7 +7,7 @@ export function createChronopedia(scene, collisions) {
   const { box, cylinder, mesh } = createPrimitives(scene);
   const exhibit = new THREE.Group();
   exhibit.name = "chronopedia-landmark";
-  exhibit.position.set(-4, 0, 84);
+  exhibit.position.set(-4, 0, 48);
   scene.add(exhibit);
 
   // The large open book is a solid exhibit, with page graphics on both halves.
@@ -52,7 +52,7 @@ export function createChronopedia(scene, collisions) {
   }
   cylinder(0, 1.5, 0, 0.09, 0.09, 3.3, "#947854", 8, exhibit).rotation.x =
     Math.PI / 2;
-  collisions.addBox(-4, 84, 6.3, 3.4);
+  collisions.addBox(-4, 48, 6.3, 3.4);
 
   // A clock on a pedestal provides a second solid obstacle beside the book.
   cylinder(-4, 0.65, -3, 0.9, 1, 1.3, "#8a9c80", 12, exhibit);
@@ -102,7 +102,7 @@ export function createChronopedia(scene, collisions) {
     exhibit,
   );
   minuteHand.rotation.z = -0.75;
-  collisions.addCircle(-8, 81, 1.15);
+  collisions.addCircle(-8, 45, 1.15);
 
   // Stacked books reinforce the encyclopedia theme and block the otter's path.
   for (let level = 0; level < 4; level++) {
@@ -118,11 +118,11 @@ export function createChronopedia(scene, collisions) {
     );
     volume.rotation.y = level % 2 ? 0.12 : -0.08;
   }
-  collisions.addBox(-0.2, 87, 2, 1.65);
+  collisions.addBox(-0.2, 51, 2, 1.65);
   createGroundText(scene, {
     lines: ["PROJECT 03", "CHRONOPEDIA"],
     x: -4,
-    z: 76.5,
+    z: 40.5,
     width: 8,
     height: 2,
     angle: 0,

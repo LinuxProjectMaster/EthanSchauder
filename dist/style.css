@@ -320,3 +320,22 @@ body {
 }
 
 #realm-location:empty { display: none; }
+
+#return-home {
+  position: fixed;
+  top: max(20px, env(safe-area-inset-top, 0px));
+  left: max(20px, env(safe-area-inset-left, 0px));
+  z-index: 15;
+  min-height: 46px;
+  padding: 12px 18px;
+  border: 2px solid #795032;
+  border-radius: 7px;
+  background: #f2ecd8ed;
+  color: #382718;
+  font: 15px/1.4 "Bree Serif", Georgia, serif;
+  cursor: pointer;
+  box-shadow: 0 3px 12px #20342622;
+}
+#return-home[hidden] { display: none; }
+#return-home:hover { background: #fff8e8; }
+#return-home:focus-visible { outline: 3px solid #3c6969; outline-offset: 5px; }

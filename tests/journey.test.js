@@ -188,3 +188,45 @@ test("Enter dives once, unique checkpoints return home once, and reset cancels t
   assert.equal(realms.active, HOME);
   assert.equal(journey.busy, false);
 });
+
+
+test("projects can be left before any checkpoints, using the home button or pond", (t) => {
+  const elements = mockDocument(t);
+  const originalListen = globalThis.addEventListener;
+  const originalMedia = globalThis.matchMedia;
+  globalThis.addEventListener = () => {};
+  globalThis.matchMedia = () => ({ matches: true });
+  t.after(() => {
+    globalThis.addEventListener = originalListen;
+    globalThis.matchMedia = originalMedia;
+  });
+  const realms = createRealms(new THREE.Scene());
+  realms.activate(PROJECT_WORLD);
+  const player = new THREE.Group();
+  player.position.copy(PROJECT_SPAWN);
+  let allowed = true;
+  const journey = createJourney({ player, realms,
+    loadingScreen: { show() {}, hide() {}, setOpacity() {} },
+    canInteract: () => allowed, onDepart() {}, onSwitch() {} });
+  const button = elements.find((element) => element.id === "return-home");
+  const pondPrompt = elements.find((element) => element.id === "pond-prompt");
+  journey.update(0, true);
+  assert.equal(button.hidden, false, "return is available immediately on arrival");
+  allowed = false;
+  button.onclick();
+  assert.equal(journey.busy, false, "reading a page blocks background travel");
+  allowed = true;
+  button.onclick();
+  assert.equal(journey.busy, true);
+  for (let i = 0; i < 60; i++) journey.update(.04, true);
+  assert.equal(realms.active, HOME);
+  assert.equal(button.hidden, true);
+  realms.activate(PROJECT_WORLD);
+  player.position.set(realms.current.pond.x, 0, realms.current.pond.z);
+  journey.update(0, true);
+  assert.equal(pondPrompt.hidden, false);
+  pondPrompt.onclick();
+  assert.equal(journey.busy, true);
+  for (let i = 0; i < 60; i++) journey.update(.04, true);
+  assert.equal(realms.active, HOME, "the arrival pond also returns without checkpoint completion");
+});

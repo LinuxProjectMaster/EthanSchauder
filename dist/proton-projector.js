@@ -7,13 +7,13 @@ export function createProtonProjector(scene, collisions) {
   const { box, sphere, cylinder, mesh } = createPrimitives(scene);
   const station = new THREE.Group();
   station.name = "proton-projector-landmark";
-  station.position.set(-11, 0, 32);
+  station.position.set(-11, 0, 20);
   scene.add(station);
 
   // Forecast display and supports are physical obstacles, with a clear route around them.
   box(0, 2.7, 0, 5.8, 3.2, 0.42, "#3f5b50", station);
   for (const x of [-2, 2]) box(x, 0.7, 0, 0.25, 1.4, 0.4, "#6d7b62", station);
-  collisions.addBox(-11, 32, 5.8, 0.5);
+  collisions.addBox(-11, 20, 5.8, 0.5);
 
   const canvas = document.createElement("canvas");
   canvas.width = 1536;
@@ -84,12 +84,12 @@ export function createProtonProjector(scene, collisions) {
     -2.66,
     station,
   );
-  collisions.addBox(-10, 28.2, 2.85, 2.2);
+  collisions.addBox(-10, 16.2, 2.85, 2.2);
 
   // The sun is another solid, walk-around exhibit, echoing the project's solar subject.
   sphere(-4.4, 2.2, 3.2, 1.65, "#d9a659", station);
   cylinder(-4.4, 0.45, 3.2, 0.5, 0.7, 0.9, "#7a8a69", 10, station);
-  collisions.addCircle(-15.4, 35.2, 1.65);
+  collisions.addCircle(-15.4, 23.2, 1.65);
   for (const angle of [0, Math.PI / 3, -Math.PI / 3]) {
     const orbit = mesh(
       new THREE.TorusGeometry(2.2, 0.045, 6, 64),
@@ -105,7 +105,7 @@ export function createProtonProjector(scene, collisions) {
   createGroundText(scene, {
     lines: ["PROJECT 01", "PROTON PROJECTOR"],
     x: -10,
-    z: 24.5,
+    z: 12.5,
     width: 8,
     height: 2,
     angle: 0,

@@ -24,10 +24,10 @@ export function createWorld(scene, collisions) {
     if (TRAIL_SIGNS.some((sign) => Math.hypot(x - sign.x, z - sign.z) < 2.6))
       return;
     // Reserve a clearing for the first project exhibit and its readable sign.
-    if (x > -21 && x < -3.8 && z > 23 && z < 42) return;
+    if (x > -21 && x < -3.8 && z > 11 && z < 30) return;
     // Keep the next project stop clear for its telescope, spectrum display, and medal.
-    if (x > 9 && x < 26 && z > 48 && z < 69) return;
-    if (x > -12 && x < 2 && z > 75 && z < 95) return;
+    if (x > 9 && x < 26 && z > 24 && z < 45) return;
+    if (x > -12 && x < 2 && z > 39 && z < 59) return;
     const g = new THREE.Group();
     g.position.set(x, 0, z);
     g.scale.setScalar(scale);

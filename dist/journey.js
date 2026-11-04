@@ -15,6 +15,14 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
   let travelTime = 0;
   let returnDelay = null;
   let hasReturned = false;
+  const homeButton = document.createElement("button");
+  homeButton.id = "return-home";
+  homeButton.textContent = "← Return home";
+  homeButton.hidden = true;
+  document.body.append(homeButton);
+  homeButton.onclick = () => {
+    if (realms.active === PROJECT_WORLD && canInteract() && !travel && returnDelay === null) start(HOME);
+  };
 
   function start(target, spinPond = false) {
     if (travel) return;
@@ -26,7 +34,8 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
       reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches });
     travelTime = 0;
     prompt.hidden = true;
-    location.textContent = spinPond ? "The pond is stirring…" : "Trail complete · Returning home…";
+    homeButton.hidden = true;
+    location.textContent = spinPond ? "The pond is stirring…" : "Returning home…";
   }
   function enterPortal() {
     const { portal, pond } = realms.current;
@@ -46,12 +55,14 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
       onDepart();
       returnDelay = 1.2;
       prompt.hidden = true;
+      homeButton.hidden = true;
     },
     cancel() {
       if (travel) loadingScreen.hide();
       travel = null;
       returnDelay = null;
       prompt.hidden = true;
+      homeButton.hidden = true;
     },
     update(dt, enabled) {
       if (returnDelay !== null) {
@@ -81,11 +92,12 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
         }
         return pose;
       }
+      homeButton.hidden = !(enabled && realms.active === PROJECT_WORLD);
       const { pond, portal } = realms.current;
       prompt.hidden = !(enabled && portal && pond && isInPond(player.position, pond));
       if (portal) prompt.textContent = `↵  ${portal.label}`;
       location.textContent = hasReturned && realms.active === HOME
-        ? "Welcome back · All three projects explored" : realms.current.location;
+        ? "Welcome back · Explore at your own pace" : realms.current.location;
       return null;
     },
   };

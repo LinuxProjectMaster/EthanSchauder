@@ -8,13 +8,13 @@ export function createNeuripsAriel(scene, collisions) {
   const { box, sphere, cylinder, mesh } = createPrimitives(scene);
   const station = new THREE.Group();
   station.name = "neurips-ariel-landmark";
-  station.position.set(17, 0, 58);
+  station.position.set(17, 0, 34);
   scene.add(station);
 
   box(0, 2.7, -2, 6.3, 3.3, 0.42, "#536675", station);
   for (const x of [-2.25, 2.25])
     box(x, 0.7, -2, 0.25, 1.4, 0.4, "#7d8a86", station);
-  collisions.addBox(17, 56, 6.3, 0.5);
+  collisions.addBox(17, 32, 6.3, 0.5);
   const canvas = document.createElement("canvas");
   canvas.width = 1536;
   canvas.height = 768;
@@ -92,7 +92,7 @@ export function createNeuripsAriel(scene, collisions) {
     telescope,
   );
   box(0, -0.65, -0.25, 1.35, 0.2, 1.1, "#b1c1c0", telescope);
-  collisions.addCircle(20, 61, 1.35);
+  collisions.addCircle(20, 37, 1.35);
 
   // The silver medal is a walk-around landmark, based on the resume's award.
   cylinder(-2, 0.6, 5, 0.85, 1, 1.2, "#9da997", 12, station);
@@ -121,12 +121,12 @@ export function createNeuripsAriel(scene, collisions) {
   );
   emblem.position.set(-2, 1.8, 5.11);
   station.add(emblem);
-  collisions.addCircle(15, 63, 1);
+  collisions.addCircle(15, 39, 1);
 
   createGroundText(scene, {
     lines: ["PROJECT 02", "NEURIPS · ARIEL"],
     x: 18,
-    z: 50,
+    z: 26,
     width: 8,
     height: 2,
     angle: 0,

@@ -2,7 +2,7 @@ import * as THREE from "./vendor/three.module.js";
 import { createPrimitives } from "./geometry.js";
 
 export const HOME_BOUNDARY = { minX: -17, maxX: 17, minZ: -18, maxZ: 18 };
-export const PROJECT_BOUNDARY = { minX: -25, maxX: 30, minZ: -2, maxZ: 184 };
+export const PROJECT_BOUNDARY = { minX: -21, maxX: 26, minZ: 0, maxZ: 58 };
 
 /** Visible split-rail perimeter, backed by an unjumpable simulation boundary. */
 export function createBoundaryFence(scene, collisions, boundary) {

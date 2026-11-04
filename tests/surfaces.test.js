@@ -23,8 +23,8 @@ test("sound changes at the visible path edge", () => {
 });
 
 test("rounded trail joints retain path sounds", () => {
-  assert.equal(getSurfaceAt(0, 38), "path");
-  assert.equal(getSurfaceAt(14, 160), "path");
+  assert.equal(getSurfaceAt(0, 22), "path");
+  assert.equal(getSurfaceAt(6, 36), "path");
 });
 
 test("there is one broad path with the otter starting on it", () => {

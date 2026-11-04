@@ -172,7 +172,7 @@ function animate() {
     }
   }
   updatePlayer(dt, elapsed);
-  followCamera.update(dt, elapsed, player.position, movement.heading, controls.state);
+  followCamera.update(dt, elapsed, player.position, realms.current.cameraOrbit, controls.state);
   renderer.render(scene, camera);
 }
 

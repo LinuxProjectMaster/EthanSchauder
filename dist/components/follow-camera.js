@@ -1,7 +1,7 @@
 import * as THREE from "../vendor/three.module.js";
 import { getIntroCameraPose } from "../camera-intro.js";
 
-/** Intro framing and otter-relative follow behavior, independent of scene content. */
+/** Intro framing and scene-relative follow behavior, independent of scene content. */
 export function createFollowCamera(camera, reducedMotion) {
   let introStart = null;
   let done = reducedMotion;
@@ -12,8 +12,8 @@ export function createFollowCamera(camera, reducedMotion) {
     get introDone() { return done; },
     beginIntro(elapsed) { introStart = elapsed; },
     snap() { snapNext = true; },
-    update(dt, elapsed, position, heading, controls) {
-      const orbit = controls.orbit + heading - Math.PI;
+    update(dt, elapsed, position, orbitOffset, controls) {
+      const orbit = controls.orbit + orbitOffset;
       const intro = done ? null : getIntroCameraPose(introStart === null ? 0 : elapsed - introStart);
       const { elevation, distance } = intro ?? controls;
       target.set(position.x, 0.75, position.z);

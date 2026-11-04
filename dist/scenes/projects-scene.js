@@ -14,6 +14,7 @@ export const projectsScene = {
   id: PROJECT_WORLD,
   spawn: PROJECT_SPAWN,
   heading: 0,
+  cameraOrbit: Math.PI,
   pond: PROJECT_POND,
   signs: TRAIL_SIGNS.map((sign) => ({ ...sign, realm: PROJECT_WORLD })),
   location: "Projects world · Read the three project signs to return home",

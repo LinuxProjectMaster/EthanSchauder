@@ -7,6 +7,9 @@ export function createScene(definition) {
   root.name = `${definition.id}-world`;
   const components = [];
   const scene = {
+    cameraOrbit: 0,
+    heading: 0,
+    getSurfaceAt: () => "grass",
     ...definition,
     root,
     collisions: new CollisionWorld(),

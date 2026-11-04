@@ -39,7 +39,7 @@ Each realm owns its scenery, signs, and collision map. Only one is visible and i
 
 ## Adding a scene
 
-Create a definition in `dist/scenes/` and add it to `SCENES` in `registry.js`. Declare a unique `id`, `spawn` (`x`, `y`, `z`), `heading`, `location`, `signs`, and `getSurfaceAt(x, z)`. Its `build(scene)` receives an independent Three.js `root`, `collisions`, and `add(component)` method. Add static meshes to `root`, register solid footprints with `collisions`, and register animated components with `add`.
+Create a definition in `dist/scenes/` and add it to `SCENES` in `registry.js`. Declare a unique `id`, `spawn` (`x`, `y`, `z`), `heading`, `location`, `signs`, and `getSurfaceAt(x, z)`. Set `cameraOrbit` when the default view should face a different direction (it defaults to zero). Its `build(scene)` receives an independent Three.js `root`, `collisions`, and `add(component)` method. Add static meshes to `root`, register solid footprints with `collisions`, and register animated components with `add`.
 
 Components may implement `update(elapsed, playerPosition, travelPose)`, `activate()`, and `deactivate()`. The manager updates only the active scene and runs lifecycle hooks when switching. Use `deactivate` to clear temporary effects. Scenes share the otter, controls, camera, and lighting without duplicating them.
 
@@ -73,7 +73,7 @@ For a pond portal, declare `pond` coordinates and `portal: { to: "destination-id
 | `dist/surfaces.js` | Shared path layout and grass/path classification |
 | `dist/footsteps.js` | Gesture-unlocked, surface-specific paw sounds |
 | `dist/theme-music.js` | Sleep music playback and mute/visibility handling |
-| `dist/signs.js` | Signboard rendering and one shared reading panel filtered by realm |
+| `dist/signs.js` | Signboard rendering and full-page section routes and navigation |
 | `dist/checkpoint-state.js` | Unique project completion state |
 | `dist/checkpoints.js` | Notifications, celebration, and completion callback |
 | `dist/index.html`, `dist/style.css` | Full-screen canvas and shared interface styles |
@@ -104,6 +104,6 @@ Project 02 is the NeurIPS Ariel Data Challenge 2025, based on Ethan's resume: si
 
 Each section has its own shareable hash route (`#/section/about`, `#/section/education`, `#/section/interests`, `#/section/contacts`) and a full-page layout with section navigation and a return link. Project details use the same page format. Browser Back and Escape return to exploration; movement controls pause while reading. The camera follows position with a fixed orbit, adjusted by dragging, and does not rotate when the otter turns.
 
-Project 03 is Chronopedia, based on https://devpost.com/software/chronopedia. The third stop features an encyclopedia, clock, and stacked-book obstacles. Closing each project's reading panel marks a unique checkpoint for the current visit (1/3, 2/3, 3/3). The final checkpoint triggers an anime.js leaf-confetti celebration and an original synthesized completion chime; M also mutes that chime. Decorative signs do not count, and repeated project reads do not increase progress. Progress resets on reload so visitors can repeat the trail.
+Project 03 is Chronopedia, based on https://devpost.com/software/chronopedia. The third stop features an encyclopedia, clock, and stacked-book obstacles. Leaving each project's page marks a unique checkpoint for the current visit (1/3, 2/3, 3/3). The final checkpoint triggers an anime.js leaf-confetti celebration and an original synthesized completion chime; M also mutes that chime. Decorative signs do not count, and repeated project reads do not increase progress. Progress resets on reload so visitors can repeat the trail.
 
 Painted arrows after every sign follow the path centerline. The path now ends at z=180, inside the expanded z=190 world boundary. `checkpoint-state.js` contains progression rules, `checkpoints.js` contains notifications and celebration effects, and `success-sound.js` contains the original chime.

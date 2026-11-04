@@ -31,7 +31,7 @@ export function createHomeWorld(scene, collisions) {
     width: 10, height: .7, angle: 0, color: "#4e6349" });
   createGroundText(scene, { lines: ["SOFTWARE · MACHINE LEARNING · SPACE"], x: 0, z: 10.85,
     width: 11, height: 0.45, angle: 0, color: "#687850" });
-  createGroundText(scene, { lines: ["THE PROJECT POND", "WALK TO THE SHORE · PRESS ENTER"], x: 0, z: -2.8,
+  createGroundText(scene, { lines: ["THE PROJECT POND", "WADE INTO THE WATER · PRESS ENTER"], x: 0, z: -2.8,
     width: 6.5, height: 1.15, angle: 0 });
   return createPond(scene, collisions, HOME_POND);
 }

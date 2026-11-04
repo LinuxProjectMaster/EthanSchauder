@@ -1,4 +1,4 @@
-import { HOME, PROJECT_WORLD, HOME_POND, isNearPond } from "./realm-data.js";
+import { HOME, PROJECT_WORLD, HOME_POND, isInPond } from "./realm-data.js";
 import { createTravel, sampleTravel } from "./journey-state.js";
 
 /** Pond interaction and return sequencing. Rendering and normal movement stay outside. */
@@ -32,7 +32,7 @@ export function createJourney({ player, realms, canInteract, onDepart, onSwitch 
   }
   function dive() {
     if (realms.active !== HOME || returnDelay !== null || !canInteract() ||
-      !isNearPond(player.position, HOME_POND)) return;
+      !isInPond(player.position, HOME_POND)) return;
     start();
   }
   prompt.onclick = dive;
@@ -71,7 +71,7 @@ export function createJourney({ player, realms, canInteract, onDepart, onSwitch 
         }
         player.position.set(pose.position.x, pose.position.y, pose.position.z);
         // Face the pond on departure and toward the clearing/trail on arrival.
-        player.rotation.y = pose.realm === HOME || travel.from === HOME && travelTime < travel.duration / 2 ? Math.PI : 0;
+        player.rotation.y = pose.realm === HOME || travel.from === HOME && travelTime < travel.duration * 0.6 ? Math.PI : 0;
         cover.style.opacity = String(pose.cover);
         if (pose.done) {
           hasReturned ||= travel.to === HOME;
@@ -80,7 +80,7 @@ export function createJourney({ player, realms, canInteract, onDepart, onSwitch 
         }
         return pose;
       }
-      prompt.hidden = !(enabled && realms.active === HOME && isNearPond(player.position, HOME_POND));
+      prompt.hidden = !(enabled && realms.active === HOME && isInPond(player.position, HOME_POND));
       location.textContent = realms.active === HOME
         ? hasReturned ? "Welcome back · All three projects explored" : "Welcome clearing · Meet Ethan, then find the pond"
         : "Projects world · Read the three project signs to return home";

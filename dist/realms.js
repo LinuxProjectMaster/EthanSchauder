@@ -51,8 +51,8 @@ export function createRealms(scene) {
     get current() { return realms[active]; },
     activate,
     runes,
-    update(elapsed, position) {
-      (active === HOME ? homePond : projectPond).update(elapsed);
+    update(elapsed, position, travelPose = null) {
+      (active === HOME ? homePond : projectPond).update(elapsed, position, travelPose);
       runes.update(elapsed, position, active === HOME);
     },
     allSigns: [...home.signs, ...projects.signs],

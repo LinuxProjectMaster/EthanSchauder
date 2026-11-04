@@ -11,7 +11,7 @@ import { createSignReader } from "./signs.js";
 import { createCheckpoints } from "./checkpoints.js";
 import { createRealms } from "./realms.js";
 import { createJourney } from "./journey.js";
-import { HOME, HOME_SPAWN, getRealmCameraOrbit } from "./realm-data.js";
+import { HOME, HOME_SPAWN, HOME_POND, PROJECT_POND, isInPond, getRealmCameraOrbit } from "./realm-data.js";
 
 const GRAVITY = 17;
 const JUMP_SPEED = 6;
@@ -121,12 +121,12 @@ function resetPlayer() {
 }
 
 function updatePlayer(dt, elapsed) {
-  realms.update(elapsed, player.position);
   const worldReady = !document.getElementById("loading");
   const tutorialEnabled = worldReady && cameraIntroDone && realms.active === HOME && !journey.busy && !signs.isOpen;
   tutorial.update({ enabled: tutorialEnabled });
   signs.update(player.position, realms.active, worldReady && !journey.busy);
   const travelPose = journey.update(dt, worldReady && !signs.isOpen);
+  realms.update(elapsed, player.position, travelPose);
   if (travelPose) {
     controls.clearMovement();
     otter.update(dt, elapsed, 0, !travelPose.waiting);
@@ -174,23 +174,25 @@ function updatePlayer(dt, elapsed) {
     Math.sign(movement.heading - previousHeading),
   );
   const surface = realms.active === HOME ? "grass" : getSurfaceAt(player.position.x, player.position.z);
+  const inWater = isInPond(player.position, realms.active === HOME ? HOME_POND : PROJECT_POND);
   footsteps.update(
     surface,
     actualSpeed,
-    player.position.y <= 0.01 && worldReady,
+    player.position.y <= 0.01 && worldReady && !inWater,
   );
-  if (pawContact && worldReady) footsteps.play(surface, actualSpeed);
+  if (pawContact && worldReady && !inWater) footsteps.play(surface, actualSpeed);
   tutorial.update({ enabled: tutorialEnabled, dt, traveled: actualSpeed * dt,
     turned: movement.heading - previousHeading, height: player.position.y });
   shadow.position.set(player.position.x, 0.045, player.position.z);
   shadow.scale.setScalar(1 + player.position.y * 0.15);
-  shadow.material.opacity = 0.16 / (1 + player.position.y);
+  shadow.material.opacity = inWater ? 0 : 0.16 / (1 + player.position.y);
 }
 
 const cameraTarget = new THREE.Vector3();
 const cameraOffset = new THREE.Vector3();
 function updateCamera(dt) {
-  const orbit = getRealmCameraOrbit(controls.state.orbit, realms.active);
+  // Keep the dragged viewing offset relative to the otter as it turns.
+  const orbit = controls.state.orbit + movement.heading - Math.PI;
   const introPose = cameraIntroDone
     ? null
     : getIntroCameraPose(

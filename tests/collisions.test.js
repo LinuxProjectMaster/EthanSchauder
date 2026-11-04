@@ -32,7 +32,7 @@ test("a rotated bench blocks travel across its seat", () => {
   assert.ok(localDepth <= -0.475 - radius + 0.001);
 });
 
-test("the full pond footprint blocks entry at both ends", () => {
+test("a solid elliptical obstacle blocks entry at both ends", () => {
   const world = new CollisionWorld();
   world.addEllipse(27, 1, 6.3, 6.3 * 0.66);
   for (const side of [-1, 1]) {

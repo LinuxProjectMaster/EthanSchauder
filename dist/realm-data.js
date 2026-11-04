@@ -30,10 +30,10 @@ export const HOME_SIGNS = [
   },
 ].map((sign) => ({ ...sign, realm: HOME, runic: true }));
 
-export function isNearPond(position, pond) {
+export function isInPond(position, pond) {
   return position.y < 0.1 && Math.hypot(
-    (position.x - pond.x) / (pond.radiusX + 2.3),
-    (position.z - pond.z) / (pond.radiusZ + 2.3),
+    (position.x - pond.x) / pond.radiusX,
+    (position.z - pond.z) / pond.radiusZ,
   ) <= 1;
 }
 

@@ -14,7 +14,6 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
   let travel = null;
   let travelTime = 0;
   let returnDelay = null;
-  let hasReturned = false;
   const homeButton = document.createElement("button");
   homeButton.id = "return-home";
   homeButton.textContent = "← Return home";
@@ -85,7 +84,6 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
         }
         player.position.set(pose.position.x, pose.position.y, pose.position.z);
         if (pose.done) {
-          hasReturned ||= travel.to === HOME;
           travel = null;
           loadingScreen.hide();
           onSwitch();
@@ -96,8 +94,7 @@ export function createJourney({ player, realms, loadingScreen, canInteract, onDe
       const { pond, portal } = realms.current;
       prompt.hidden = !(enabled && portal && pond && isInPond(player.position, pond));
       if (portal) prompt.textContent = `↵  ${portal.label}`;
-      location.textContent = hasReturned && realms.active === HOME
-        ? "Welcome back · Explore at your own pace" : realms.current.location;
+      location.textContent = realms.current.location;
       return null;
     },
   };

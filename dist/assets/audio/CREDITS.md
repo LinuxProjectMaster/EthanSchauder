@@ -25,4 +25,4 @@ The active grass WAV now preserves all six seconds and both stereo channels, wit
 
 ## Theme music
 
-The user requested Sleep music as the theme song. The provided local file `leberch-sleep-music-587996.mp3` is bundled as `sleep-theme.mp3`. It plays in full on a loop at a gentle volume, starting after the first keyboard or pointer interaction. No CC0 claim is made for this user-provided track.
+The user requested Sleep music as the theme song. The provided local file `leberch-sleep-music-587996.mp3` is bundled as `sleep-theme.m4a` (128 kbps AAC, converted from the supplied original to fit hosting limits). It plays in full on a loop at a gentle volume, starting after the first keyboard or pointer interaction. No CC0 claim is made for this user-provided track.

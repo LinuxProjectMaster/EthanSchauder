@@ -1,6 +1,6 @@
 /** Start the user-provided theme on the first interaction, as browsers require. */
 export function createThemeMusic() {
-  const music = new Audio("./assets/audio/sleep-theme.mp3");
+  const music = new Audio("./assets/audio/sleep-theme.m4a");
   music.loop = true;
   music.preload = "auto";
   music.volume = 0.35;

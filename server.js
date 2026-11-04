@@ -9,6 +9,7 @@ const types = {
   ".png": "image/png",
   ".wav": "audio/wav",
   ".mp3": "audio/mpeg",
+  ".m4a": "audio/mp4",
   ".ogg": "audio/ogg",
 };
 http

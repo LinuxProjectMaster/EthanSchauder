@@ -52,7 +52,7 @@ For a pond portal, declare `pond` coordinates and `portal: { to: "destination-id
 | File | Responsibility |
 | --- | --- |
 | `dist/main.js` | Application composition, player updates, and the animation loop |
-| `dist/camera-intro.js` | Opening zoom, one-second close-up, and gentle pullback |
+| `dist/camera-intro.js` | Opening one-second close-up and gentle pullback |
 | `dist/movement.js` | Heading-based movement, turn speed, walk/sprint speed, and acceleration |
 | `dist/otter.js` | GLB loading, model normalization, and idle/walk animation blending |
 | `dist/realm-data.js` | Realm IDs, spawn/pond coordinates, and welcome sign copy |

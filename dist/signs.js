@@ -58,11 +58,6 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
   page.id = "section-page";
   page.hidden = true;
   page.innerHTML = `
-    <header class="section-header">
-      <a class="section-brand" href="#">ETHAN SCHAUDER <span>University of Virginia</span></a>
-      <nav aria-label="Portfolio sections"></nav>
-      <a class="section-return" href="#">← Back to the world</a>
-    </header>
     <article class="section-article" aria-labelledby="section-title">
       <div class="section-mark" aria-hidden="true">✧</div>
       <p class="section-eyebrow"></p>
@@ -76,19 +71,42 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
   const homeSections = signs.filter((sign) => sign.runic);
   const slug = (sign) => sign.projectId ?? sign.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   const route = (sign) => `#/section/${slug(sign)}`;
-  for (const sign of homeSections) {
-    const link = document.createElement("a");
-    link.href = route(sign);
-    link.textContent = sign.title.toLowerCase();
-    page.querySelector("nav").append(link);
-  }
   const dust = createRuneDust();
   let pending = false;
   let occupiedRune = null;
   let nearest = null;
   let activeSign = null;
   let lastFocus = null;
-  let inertElements = new Map();
+  const inertElements = new Map();
+  let pageAnimation;
+  let closing = false;
+
+  function transitionPage(entering, onComplete = () => {}) {
+    // Capture the current frame before cancelling, so rapid Back/Forward stays continuous.
+    const opacity = page.hidden ? 0 : Number(getComputedStyle(page).opacity);
+    const transform = page.hidden ? "translateY(16px)" : getComputedStyle(page).transform;
+    pageAnimation?.cancel();
+    pageAnimation = null;
+    page.hidden = false;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      onComplete();
+      return;
+    }
+    pageAnimation = page.animate([
+      { opacity, transform },
+      { opacity: entering ? 1 : 0, transform: entering ? "translateY(0)" : "translateY(10px)" },
+    ], {
+      duration: entering ? 520 : 320,
+      easing: "cubic-bezier(.22, 1, .36, 1)",
+      fill: "forwards",
+    });
+    pageAnimation.onfinish = () => {
+      const finished = pageAnimation;
+      pageAnimation = null;
+      onComplete();
+      finished.cancel();
+    };
+  }
 
   function completePrevious() {
     const previous = activeSign;
@@ -96,19 +114,26 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
     if (previous?.projectId) onProjectRead(previous);
   }
   function hidePage() {
-    if (!activeSign) return;
-    completePrevious();
-    page.hidden = true;
-    document.body.classList.remove("section-view");
-    for (const [element, inert] of inertElements) element.inert = inert;
-    inertElements.clear();
-    document.title = "Little Roamer";
-    if (lastFocus?.isConnected) lastFocus.focus({ preventScroll: true });
+    if (!activeSign || closing) return;
+    closing = true;
+    page.inert = true;
+    transitionPage(false, () => {
+      completePrevious();
+      page.hidden = true;
+      closing = false;
+      document.body.classList.remove("section-view");
+      for (const [element, inert] of inertElements) element.inert = inert;
+      inertElements.clear();
+      document.title = "Little Roamer";
+      if (lastFocus?.isConnected) lastFocus.focus({ preventScroll: true });
+    });
   }
   function render(sign) {
     if (activeSign && activeSign !== sign) completePrevious();
     if (page.hidden) lastFocus = document.activeElement;
     activeSign = sign;
+    closing = false;
+    page.inert = false;
     page.classList.toggle("project-page", !sign.runic);
     const title = sign.title.toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase());
     page.querySelector("h1").textContent = title;
@@ -141,10 +166,6 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
       if (item.url.startsWith("https:")) { link.target = "_blank"; link.rel = "noopener noreferrer"; }
       links.append(link);
     }
-    page.querySelectorAll("nav a").forEach((link) => {
-      if (link.getAttribute("href") === route(sign)) link.setAttribute("aria-current", "page");
-      else link.removeAttribute("aria-current");
-    });
     const siblings = sign.runic ? homeSections : signs.filter((entry) => entry.projectId);
     const next = siblings[(siblings.indexOf(sign) + 1) % siblings.length];
     const nextLink = page.querySelector(".section-next");
@@ -156,7 +177,7 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
         element.inert = true;
       }
     }
-    page.hidden = false;
+    transitionPage(true);
     document.body.classList.add("section-view");
     document.title = `${title} · Ethan Schauder`;
     page.scrollTop = 0;

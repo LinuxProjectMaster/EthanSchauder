@@ -172,7 +172,7 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
         open();
       }
       prompt.hidden = !nearest || dialog.open || pending;
-      if (nearest) prompt.textContent = nearest.runic ? `Step onto the rune · ${nearest.title}` : `↵  ${nearest.title}`;
+      if (nearest) prompt.textContent = `↵  ${nearest.title}`;
     },
   };
 }

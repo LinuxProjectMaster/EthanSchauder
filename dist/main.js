@@ -1,4 +1,5 @@
 import * as THREE from "./vendor/three.module.js";
+import { createTutorial } from "./tutorial.js";
 import { createOtter } from "./otter.js";
 import { createControls } from "./controls.js";
 import { createFootsteps } from "./footsteps.js";
@@ -58,6 +59,7 @@ scene.add(sun);
 
 createThemeMusic();
 const footsteps = createFootsteps();
+const tutorial = createTutorial();
 const realms = createRealms(scene);
 const checkpoints = createCheckpoints(() => journey.returnHome());
 const signs = createSignReader(realms.allSigns, (project) => checkpoints.complete(project), (rock) => {
@@ -121,6 +123,8 @@ function resetPlayer() {
 function updatePlayer(dt, elapsed) {
   realms.update(elapsed, player.position);
   const worldReady = !document.getElementById("loading");
+  const tutorialEnabled = worldReady && cameraIntroDone && realms.active === HOME && !journey.busy && !signs.isOpen;
+  tutorial.update({ enabled: tutorialEnabled });
   signs.update(player.position, realms.active, worldReady && !journey.busy);
   const travelPose = journey.update(dt, worldReady && !signs.isOpen);
   if (travelPose) {
@@ -176,6 +180,8 @@ function updatePlayer(dt, elapsed) {
     player.position.y <= 0.01 && worldReady,
   );
   if (pawContact && worldReady) footsteps.play(surface, actualSpeed);
+  tutorial.update({ enabled: tutorialEnabled, dt, traveled: actualSpeed * dt,
+    turned: movement.heading - previousHeading, height: player.position.y });
   shadow.position.set(player.position.x, 0.045, player.position.z);
   shadow.scale.setScalar(1 + player.position.y * 0.15);
   shadow.material.opacity = 0.16 / (1 + player.position.y);

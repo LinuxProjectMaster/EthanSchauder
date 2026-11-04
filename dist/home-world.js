@@ -25,9 +25,11 @@ export function createHomeWorld(scene, collisions) {
     sphere(x + 0.6, 3.6, z, 0.95, "#91aa62");
     collisions.addCircle(x, z, 0.3);
   }
-  createGroundText(scene, { lines: ["ETHAN SCHAUDER"], x: 0, z: 9.5,
+  createGroundText(scene, { lines: ["ETHAN SCHAUDER"], x: 0, z: 8.7,
     width: 12, height: 1.2, angle: 0 });
-  createGroundText(scene, { lines: ["SOFTWARE · MACHINE LEARNING · SPACE"], x: 0, z: 11,
+  createGroundText(scene, { lines: ["UNIVERSITY OF VIRGINIA"], x: 0, z: 9.85,
+    width: 10, height: .7, angle: 0, color: "#4e6349" });
+  createGroundText(scene, { lines: ["SOFTWARE · MACHINE LEARNING · SPACE"], x: 0, z: 10.85,
     width: 11, height: 0.45, angle: 0, color: "#687850" });
   createGroundText(scene, { lines: ["THE PROJECT POND", "WALK TO THE SHORE · PRESS ENTER"], x: 0, z: -2.8,
     width: 6.5, height: 1.15, angle: 0 });

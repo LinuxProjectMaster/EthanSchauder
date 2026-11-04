@@ -3,59 +3,28 @@ import { createTutorial } from "./tutorial.js";
 import { createOtter } from "./otter.js";
 import { createControls } from "./controls.js";
 import { createFootsteps } from "./footsteps.js";
-import { getSurfaceAt } from "./surfaces.js";
 import { advanceMovement } from "./movement.js";
-import { getIntroCameraPose } from "./camera-intro.js";
 import { createThemeMusic } from "./theme-music.js";
 import { createSignReader } from "./signs.js";
 import { createCheckpoints } from "./checkpoints.js";
 import { createRealms } from "./realms.js";
 import { createJourney } from "./journey.js";
-import { HOME, HOME_SPAWN, HOME_POND, PROJECT_POND, isInPond, getRealmCameraOrbit } from "./realm-data.js";
+import { HOME, HOME_SPAWN, isInPond } from "./realm-data.js";
+import { createLoadingScreen } from "./components/loading-screen.js";
+import { createWorldView } from "./components/world-view.js";
+import { createFollowCamera } from "./components/follow-camera.js";
 
 const GRAVITY = 17;
 const JUMP_SPEED = 6;
 const SPAWN = new THREE.Vector3(HOME_SPAWN.x, HOME_SPAWN.y, HOME_SPAWN.z);
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-let cameraIntroStart = null;
-let cameraIntroDone = reducedMotion;
-
-const scene = new THREE.Scene();
-scene.background = new THREE.Color("#e5ebd8");
-scene.fog = new THREE.Fog("#e5ebd8", 65, 155);
-const renderer = new THREE.WebGLRenderer({
-  canvas: document.getElementById("world"),
-  antialias: true,
-});
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
-const camera = new THREE.PerspectiveCamera(
-  39,
-  innerWidth / innerHeight,
-  0.1,
-  220,
-);
-
-scene.add(new THREE.HemisphereLight("#fff9df", "#7b966c", 2.8));
-const sun = new THREE.DirectionalLight("#fff1cf", 3.5);
-sun.position.set(-25, 45, 20);
-sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, {
-  left: -55,
-  right: 55,
-  top: 55,
-  bottom: -55,
-  near: 1,
-  far: 110,
-});
-sun.shadow.bias = -0.0006;
-sun.shadow.normalBias = 0.035;
-scene.add(sun);
+const loadingScreen = createLoadingScreen();
+loadingScreen.show();
+const loadingStarted = performance.now();
+let bootReady = false;
+let startupRevealAt = null;
+const { scene, renderer, camera } = createWorldView(document.getElementById("world"));
+const followCamera = createFollowCamera(camera, reducedMotion);
 
 createThemeMusic();
 const footsteps = createFootsteps();
@@ -63,7 +32,7 @@ const tutorial = createTutorial();
 const realms = createRealms(scene);
 const checkpoints = createCheckpoints(() => journey.returnHome());
 const signs = createSignReader(realms.allSigns, (project) => checkpoints.complete(project), (rock) => {
-  realms.runes.activate(rock);
+  realms.current.runes?.activate(rock);
   const point = new THREE.Vector3(rock.x, .2, rock.z).project(camera);
   return { x: (point.x + 1) * innerWidth / 2, y: (1 - point.y) * innerHeight / 2 };
 });
@@ -72,12 +41,11 @@ const player = otter.root;
 player.position.copy(SPAWN);
 const movement = { heading: Math.PI, speed: 0 };
 player.rotation.y = Math.PI;
-let snapCamera = true;
 let verticalSpeed = 0;
 const controls = createControls(renderer.domElement, resetPlayer);
 const journey = createJourney({
-  player, realms,
-  canInteract: () => !signs.isOpen && !document.getElementById("loading"),
+  player, realms, loadingScreen,
+  canInteract: () => !signs.isOpen && bootReady,
   onDepart() {
     controls.clearMovement();
     movement.speed = 0;
@@ -85,11 +53,11 @@ const journey = createJourney({
     verticalSpeed = 0;
   },
   onSwitch() {
-    movement.heading = realms.active === HOME ? Math.PI : 0;
+    movement.heading = realms.current.heading;
     player.rotation.y = movement.heading;
     player.rotation.x = 0;
     controls.clearMovement();
-    snapCamera = true;
+    followCamera.snap();
   },
 });
 
@@ -109,7 +77,7 @@ function resetPlayer() {
   signs.close();
   realms.activate(HOME);
   player.position.copy(SPAWN);
-  snapCamera = true;
+  followCamera.snap();
   movement.heading = Math.PI;
   movement.speed = 0;
   movement.turnRemaining = 0;
@@ -121,8 +89,8 @@ function resetPlayer() {
 }
 
 function updatePlayer(dt, elapsed) {
-  const worldReady = !document.getElementById("loading");
-  const tutorialEnabled = worldReady && cameraIntroDone && realms.active === HOME && !journey.busy && !signs.isOpen;
+  const worldReady = bootReady;
+  const tutorialEnabled = worldReady && followCamera.introDone && realms.active === HOME && !journey.busy && !signs.isOpen;
   tutorial.update({ enabled: tutorialEnabled });
   signs.update(player.position, realms.active, worldReady && !journey.busy);
   const travelPose = journey.update(dt, worldReady && !signs.isOpen);
@@ -173,8 +141,8 @@ function updatePlayer(dt, elapsed) {
     player.position.y > 0.01,
     Math.sign(movement.heading - previousHeading),
   );
-  const surface = realms.active === HOME ? "grass" : getSurfaceAt(player.position.x, player.position.z);
-  const inWater = isInPond(player.position, realms.active === HOME ? HOME_POND : PROJECT_POND);
+  const surface = realms.current.getSurfaceAt(player.position.x, player.position.z);
+  const inWater = realms.current.pond && isInPond(player.position, realms.current.pond);
   footsteps.update(
     surface,
     actualSpeed,
@@ -188,73 +156,32 @@ function updatePlayer(dt, elapsed) {
   shadow.material.opacity = inWater ? 0 : 0.16 / (1 + player.position.y);
 }
 
-const cameraTarget = new THREE.Vector3();
-const cameraOffset = new THREE.Vector3();
-function updateCamera(dt) {
-  // Keep the dragged viewing offset relative to the otter as it turns.
-  const orbit = controls.state.orbit + movement.heading - Math.PI;
-  const introPose = cameraIntroDone
-    ? null
-    : getIntroCameraPose(
-        cameraIntroStart === null ? 0 : elapsed - cameraIntroStart,
-      );
-  const { elevation, distance } = introPose ?? controls.state;
-  cameraTarget.set(player.position.x, 0.75, player.position.z);
-  cameraOffset.set(
-    Math.sin(orbit) * Math.cos(elevation) * distance,
-    Math.sin(elevation) * distance,
-    Math.cos(orbit) * Math.cos(elevation) * distance,
-  );
-  const goal = cameraOffset.add(cameraTarget);
-  // Follow the exact intro timeline so the close-up holds for a full second.
-  if (introPose || snapCamera) camera.position.copy(goal);
-  else camera.position.lerp(goal, 1 - Math.exp(-dt * 5));
-  snapCamera = false;
-  if (introPose?.done) {
-    cameraIntroDone = true;
-    controls.state.distance = distance;
-    controls.state.elevation = elevation;
-  }
-  camera.lookAt(cameraTarget);
-}
-
-function resize() {
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-}
-addEventListener("resize", resize);
-resize();
-camera.position.set(17, 22, 27);
-
 const clock = new THREE.Clock();
 let elapsed = 0;
 function animate() {
   requestAnimationFrame(animate);
   const dt = Math.max(0.0001, Math.min(clock.getDelta(), 0.04));
   elapsed += dt;
+  if (!bootReady && startupRevealAt !== null && elapsed >= startupRevealAt) {
+    const progress = (elapsed - startupRevealAt) / (reducedMotion ? 0.2 : 0.9);
+    loadingScreen.setOpacity(1 - progress);
+    if (progress >= 1) {
+      loadingScreen.hide();
+      bootReady = true;
+      followCamera.beginIntro(elapsed);
+    }
+  }
   updatePlayer(dt, elapsed);
-  updateCamera(dt);
+  followCamera.update(dt, elapsed, player.position, movement.heading, controls.state);
   renderer.render(scene, camera);
 }
 
-// Compile shaders before revealing the world, respecting reduced-motion settings.
-const loadingStarted = performance.now();
+// Warm all scenes so a later portal never reveals uncompiled scenery.
+const visibility = [];
+scene.children.forEach((child) => {
+  if (child.name.endsWith("-world")) { visibility.push([child, child.visible]); child.visible = true; }
+});
 await renderer.compileAsync(scene, camera);
+for (const [child, visible] of visibility) child.visible = visible;
+startupRevealAt = elapsed + Math.max(0, (reducedMotion ? 0 : 2) - (performance.now() - loadingStarted) / 1000);
 animate();
-const introDuration = reducedMotion ? 0 : 2000;
-setTimeout(
-  () => {
-    requestAnimationFrame(() => {
-      document.getElementById("loading").classList.add("done");
-      setTimeout(
-        () => {
-          document.getElementById("loading")?.remove();
-          cameraIntroStart = elapsed;
-        },
-        reducedMotion ? 200 : 1000,
-      );
-    });
-  },
-  Math.max(0, introDuration - (performance.now() - loadingStarted)),
-);

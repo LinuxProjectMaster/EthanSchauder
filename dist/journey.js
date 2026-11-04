@@ -1,17 +1,12 @@
-import { HOME, PROJECT_WORLD, HOME_POND, isInPond } from "./realm-data.js";
+import { HOME, PROJECT_WORLD, isInPond } from "./realm-data.js";
 import { createTravel, sampleTravel } from "./journey-state.js";
 
-/** Pond interaction and return sequencing. Rendering and normal movement stay outside. */
-export function createJourney({ player, realms, canInteract, onDepart, onSwitch }) {
+/** Portal input and travel sequencing; scene building and loading visuals stay outside. */
+export function createJourney({ player, realms, loadingScreen, canInteract, onDepart, onSwitch }) {
   const prompt = document.createElement("button");
   prompt.id = "pond-prompt";
-  prompt.textContent = "↵  Dive into the projects world";
   prompt.hidden = true;
   document.body.append(prompt);
-  const cover = document.createElement("div");
-  cover.id = "journey-cover";
-  cover.setAttribute("aria-hidden", "true");
-  document.body.append(cover);
   const location = document.createElement("aside");
   location.id = "realm-location";
   location.setAttribute("aria-live", "polite");
@@ -21,25 +16,28 @@ export function createJourney({ player, realms, canInteract, onDepart, onSwitch 
   let returnDelay = null;
   let hasReturned = false;
 
-  function start() {
+  function start(target, spinPond = false) {
     if (travel) return;
+    const destination = realms.get(target);
     onDepart();
-    travel = createTravel(realms.active, player.position,
-      matchMedia("(prefers-reduced-motion: reduce)").matches);
+    travel = createTravel({ from: realms.active, to: target,
+      start: { x: player.position.x, y: player.position.y, z: player.position.z },
+      destination: destination.spawn, spinPond,
+      reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches });
     travelTime = 0;
     prompt.hidden = true;
-    location.textContent = realms.active === HOME ? "Diving into the projects…" : "Trail complete · Jumping home…";
+    location.textContent = spinPond ? "The pond is stirring…" : "Trail complete · Jumping home…";
   }
-  function dive() {
-    if (realms.active !== HOME || returnDelay !== null || !canInteract() ||
-      !isInPond(player.position, HOME_POND)) return;
-    start();
+  function enterPortal() {
+    const { portal, pond } = realms.current;
+    if (!portal || !pond || returnDelay !== null || !canInteract() || !isInPond(player.position, pond)) return;
+    start(portal.to, true);
   }
-  prompt.onclick = dive;
+  prompt.onclick = enterPortal;
   addEventListener("keydown", (event) => {
     if (event.key !== "Enter" || event.repeat || event.defaultPrevented || prompt.hidden) return;
     event.preventDefault();
-    dive();
+    enterPortal();
   });
   return {
     get busy() { return !!travel || returnDelay !== null; },
@@ -50,9 +48,9 @@ export function createJourney({ player, realms, canInteract, onDepart, onSwitch 
       prompt.hidden = true;
     },
     cancel() {
+      if (travel) loadingScreen.hide();
       travel = null;
       returnDelay = null;
-      cover.style.opacity = "0";
       prompt.hidden = true;
     },
     update(dt, enabled) {
@@ -60,30 +58,34 @@ export function createJourney({ player, realms, canInteract, onDepart, onSwitch 
         returnDelay -= dt;
         if (returnDelay > 0) return { waiting: true };
         returnDelay = null;
-        start();
+        start(HOME);
       }
       if (travel) {
         travelTime += dt;
         const pose = sampleTravel(travel, travelTime);
+        // Make the loader fully opaque before activating the destination.
+        if (pose.showLoader) {
+          loadingScreen.show("Travelling to the next world");
+          loadingScreen.setOpacity(pose.cover);
+        }
         if (realms.active !== pose.realm) {
           realms.activate(pose.realm);
           onSwitch();
         }
         player.position.set(pose.position.x, pose.position.y, pose.position.z);
-        // Face the pond on departure and toward the clearing/trail on arrival.
-        player.rotation.y = pose.realm === HOME || travel.from === HOME && travelTime < travel.duration * 0.6 ? Math.PI : 0;
-        cover.style.opacity = String(pose.cover);
         if (pose.done) {
           hasReturned ||= travel.to === HOME;
           travel = null;
+          loadingScreen.hide();
           onSwitch();
         }
         return pose;
       }
-      prompt.hidden = !(enabled && realms.active === HOME && isInPond(player.position, HOME_POND));
-      location.textContent = realms.active === HOME
-        ? hasReturned ? "Welcome back · All three projects explored" : "Welcome clearing · Meet Ethan, then find the pond"
-        : "Projects world · Read the three project signs to return home";
+      const { pond, portal } = realms.current;
+      prompt.hidden = !(enabled && portal && pond && isInPond(player.position, pond));
+      if (portal) prompt.textContent = `↵  ${portal.label}`;
+      location.textContent = hasReturned && realms.active === HOME
+        ? "Welcome back · All three projects explored" : realms.current.location;
       return null;
     },
   };

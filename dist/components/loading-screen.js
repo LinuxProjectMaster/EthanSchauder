@@ -1,0 +1,121 @@
+const illustration = `
+      <div class="loader-glow"></div>
+      <div class="loader-scene">
+        <svg class="orbit" viewBox="0 0 440 360" fill="none" aria-hidden="true">
+          <ellipse class="orbit-back" cx="220" cy="212" rx="168" ry="72" />
+          <ellipse class="orbit-inner" cx="220" cy="212" rx="135" ry="52" />
+          <g class="land">
+            <path
+              d="M97 222 150 194 208 205 273 185 341 220 277 253 159 253Z"
+              fill="#6c815b"
+            />
+            <path
+              d="m97 222 62 31 118 0 64-33-17 24-46 37-118-2-48-33Z"
+              fill="#435942"
+            />
+            <path
+              d="m138 225 57-15 41 10 50-13 23 11-74 19-44-10-35 13Z"
+              fill="#c2b78c"
+            />
+            <g class="loader-tree">
+              <path d="M135 209v-37" stroke="#9b9267" stroke-width="5" />
+              <path d="m135 135-22 51h44Z" fill="#8aab77" />
+              <path d="m135 151-18 43h36Z" fill="#6e9165" />
+            </g>
+            <g class="loader-rock">
+              <path d="m290 229 9-13 16 3 7 12-18 6Z" fill="#b1ba97" />
+              <path d="m299 216 5 21-14-8Z" fill="#8c9f7f" />
+            </g>
+          </g>
+          <circle class="loader-sun" cx="294" cy="97" r="23" fill="#edc078" />
+          <circle
+            class="sun-halo"
+            cx="294"
+            cy="97"
+            r="33"
+            stroke="#edc078"
+            stroke-opacity=".2"
+          />
+          <g class="runner-wrap">
+            <path d="m196 178-38 17 41-5" fill="#986b47" />
+            <ellipse cx="216" cy="180" rx="27" ry="13" fill="#a87952" />
+            <ellipse cx="235" cy="176" rx="12" ry="15" fill="#e0c29a" />
+            <circle cx="241" cy="163" r="15" fill="#a87952" />
+            <circle cx="232" cy="151" r="4" fill="#986b47" />
+            <ellipse cx="252" cy="168" rx="11" ry="7" fill="#e0c29a" />
+            <circle cx="248" cy="160" r="2.4" fill="#283b2e" />
+            <circle cx="261" cy="166" r="3" fill="#283b2e" />
+            <path
+              d="m255 170 15 3m-15-1 13 7"
+              stroke="#f1dfbd"
+              stroke-width="1"
+            />
+            <g class="leg leg-front" style="transform-origin: 199px 183px">
+              <path
+                d="m199 183-4 17 8 2"
+                stroke="#986b47"
+                stroke-width="8"
+                stroke-linecap="round"
+              />
+            </g>
+            <g class="leg leg-back" style="transform-origin: 205px 183px">
+              <path
+                d="m205 183 6 16 7-1"
+                stroke="#986b47"
+                stroke-width="7"
+                stroke-linecap="round"
+              />
+            </g>
+            <g class="leg leg-back" style="transform-origin: 235px 184px">
+              <path
+                d="m235 184-4 17 8 1"
+                stroke="#a87952"
+                stroke-width="7"
+                stroke-linecap="round"
+              />
+            </g>
+            <g class="leg leg-front" style="transform-origin: 229px 184px">
+              <path
+                d="m229 184 5 17 8-1"
+                stroke="#a87952"
+                stroke-width="8"
+                stroke-linecap="round"
+              />
+            </g>
+          </g>
+          <g
+            class="speed-lines"
+            stroke="#edf0d9"
+            stroke-opacity=".3"
+            stroke-linecap="round"
+          >
+            <path d="M174 166h-19" />
+            <path d="M170 180h-29" />
+            <path d="M178 194h-16" />
+          </g>
+          <circle class="orbiter" cx="388" cy="212" r="5" fill="#edc078" />
+          <circle class="floating-dot" cx="80" cy="130" r="3" fill="#a1b18b" />
+        </svg>
+        <div class="load-track"><div></div></div>
+      </div>
+    `;
+
+/** One reusable opening/travel screen. The caller owns timing and scene switches. */
+export function createLoadingScreen(parent = document.body) {
+  const element = document.createElement("div");
+  element.id = "loading";
+  element.setAttribute("role", "status");
+  element.hidden = true;
+  parent.append(element);
+  return {
+    get visible() { return !element.hidden; },
+    show(label = "Loading the world") {
+      if (element.hidden) element.innerHTML = illustration;
+      element.setAttribute("aria-label", label);
+      element.hidden = false;
+      element.style.opacity = "1";
+    },
+    setOpacity(opacity) { element.style.opacity = String(Math.max(0, Math.min(1, opacity))); },
+    hide() { element.hidden = true; element.style.opacity = "0"; },
+  };
+}

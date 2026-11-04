@@ -1,8 +1,6 @@
 import * as THREE from "./vendor/three.module.js";
 import { createPrimitives } from "./geometry.js";
 import { createGroundText } from "./ground-text.js";
-import { createPond } from "./pond.js";
-import { HOME_POND } from "./realm-data.js";
 
 /** An enclosed welcome clearing, independent of the long projects trail. */
 export function createHomeWorld(scene, collisions) {
@@ -33,5 +31,4 @@ export function createHomeWorld(scene, collisions) {
     width: 11, height: 0.45, angle: 0, color: "#687850" });
   createGroundText(scene, { lines: ["THE PROJECT POND", "WADE INTO THE WATER · PRESS ENTER"], x: 0, z: -2.8,
     width: 6.5, height: 1.15, angle: 0 });
-  return createPond(scene, collisions, HOME_POND);
 }

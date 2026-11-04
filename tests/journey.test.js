@@ -33,48 +33,53 @@ test("pond interaction requires a grounded otter inside the water", () => {
   assert.equal(isInPond({ x: 0, y: 1, z: -6 }, HOME_POND), false);
 });
 
-test("dive and return switch worlds under cover and land exactly at their spawns", () => {
+test("pond spin precedes the loading animation, which conceals the scene switch", () => {
   for (const reducedMotion of [false, true]) {
     for (const from of [HOME, PROJECT_WORLD]) {
       const start = from === HOME ? { x: 0, y: 0, z: -6 } : { x: 10, y: 0, z: 84 };
-      const travel = createTravel(from, start, reducedMotion);
+      const to = from === HOME ? PROJECT_WORLD : HOME;
+      const destination = to === HOME ? HOME_SPAWN : PROJECT_SPAWN;
+      const travel = createTravel({ from, to, start, destination, spinPond: from === HOME, reducedMotion });
       assert.deepEqual(sampleTravel(travel, 0).position, start);
-      const halfway = sampleTravel(travel, travel.duration * (from === HOME ? 0.6 : 0.5));
-      assert.equal(halfway.realm, travel.to);
-      assert.equal(halfway.cover, 1);
+      const spinning = sampleTravel(travel, travel.anticipation * 0.75);
+      assert.equal(spinning.realm, from);
+      assert.equal(spinning.showLoader, false, "the pond spins before the loader appears");
+      if (from === HOME) {
+        assert.deepEqual(spinning.position, start, "the otter stays in the pool");
+        assert.ok(spinning.swirl > 0);
+        assert.equal(spinning.pondRotation > 0, !reducedMotion);
+      }
+      const loading = sampleTravel(travel, travel.anticipation + travel.fadeIn + 0.01);
+      assert.equal(loading.showLoader, true);
+      assert.equal(loading.cover, 1);
+      assert.equal(loading.realm, from, "the loader plays before switching scenes");
+      const switched = sampleTravel(travel, travel.switchAt);
+      assert.equal(switched.realm, to);
+      assert.equal(switched.cover, 1);
+      assert.equal(switched.showLoader, true);
+      assert.deepEqual(switched.position, destination);
       const finished = sampleTravel(travel, travel.duration + 0.1);
-      assert.deepEqual(finished.position, from === HOME ? PROJECT_SPAWN : HOME_SPAWN);
+      assert.deepEqual(finished.position, destination);
       assert.equal(finished.cover, 0);
+      assert.equal(finished.showLoader, false);
       assert.equal(finished.done, true);
-      assert.ok(sampleTravel(travel, travel.duration * (reducedMotion ? 0.95 : 0.8)).position.y > 0,
-        "the otter visibly jumps out of the destination pond");
     }
   }
 });
 
-test("water encloses the otter before departure and a cancelled vortex disappears", () => {
-  const start = { x: 1, y: 0, z: -7 };
+test("pond spin stays flat across the pool and clears on cancellation", () => {
+  const position = { x: 1, y: 0, z: -7 };
   const scene = new THREE.Scene();
   const pond = createPond(scene, new CollisionWorld(), HOME_POND);
-  const travel = createTravel(HOME, start);
-  const rising = sampleTravel(travel, travel.duration * 0.3);
-  assert.deepEqual(rising.position, start, "otter stays in place as water rises");
-  assert.equal(rising.realm, HOME);
-  assert.equal(rising.cover, 0, "water is visible before the screen cover");
-  assert.ok(rising.swirl > 0);
-  pond.update(1, start, rising);
-  const vortex = scene.getObjectByName("pond-vortex");
-  assert.equal(vortex.visible, true);
-  assert.equal(vortex.position.x, start.x);
-  assert.equal(vortex.position.z, start.z);
-  const enclosed = sampleTravel(travel, travel.duration * 0.48);
-  assert.equal(enclosed.swirl, 1, "water reaches full height before submerging");
-  assert.equal(enclosed.realm, HOME);
-  assert.equal(enclosed.cover, 0);
-  pond.update(2, enclosed.position, enclosed);
-  assert.ok(vortex.children[0].scale.y > 2.5);
-  pond.update(3, start, null);
-  assert.equal(vortex.visible, false, "cancel/reset removes the water column");
+  pond.update(1, position, { swirl: 1, pondRotation: 3 });
+  const spiral = scene.getObjectByName("pond-spin");
+  assert.equal(spiral.visible, true);
+  for (const arm of spiral.children) {
+    const vertices = arm.geometry.attributes.position;
+    for (let i = 0; i < vertices.count; i++) assert.equal(vertices.getZ(i), 0);
+  }
+  pond.update(2, position);
+  assert.equal(spiral.visible, false);
 });
 
 test("home and project scenery have isolated visibility, signs, and collision worlds", (t) => {
@@ -120,10 +125,19 @@ test("Enter dives once, unique checkpoints return home once, and reset cancels t
   });
   const player = new THREE.Group();
   player.position.set(0, 0, -6);
-  const realms = { active: HOME, activate(id) { this.active = id; } };
+  const definitions = {
+    [HOME]: { spawn: HOME_SPAWN, pond: HOME_POND, heading: Math.PI,
+      portal: { to: PROJECT_WORLD, label: "Explore projects" }, location: "Home" },
+    [PROJECT_WORLD]: { spawn: PROJECT_SPAWN, heading: 0, location: "Projects" },
+  };
+  const realms = { active: HOME, activate(id) { this.active = id; },
+    get: (id) => definitions[id], get current() { return definitions[this.active]; } };
+  const loader = { visible: false, opacity: 0,
+    show() { this.visible = true; }, setOpacity(value) { this.opacity = value; },
+    hide() { this.visible = false; } };
   let departures = 0;
   let allowInteraction = true;
-  const journey = createJourney({ player, realms, canInteract: () => allowInteraction,
+  const journey = createJourney({ player, realms, loadingScreen: loader, canInteract: () => allowInteraction,
     onDepart() { departures++; }, onSwitch() {} });
   journey.update(0, true);
   assert.equal(elements[0].hidden, false);
@@ -138,6 +152,9 @@ test("Enter dives once, unique checkpoints return home once, and reset cancels t
   enter();
   enter();
   assert.equal(departures, 1);
+  journey.update(1.4, true);
+  assert.equal(loader.visible, true);
+  assert.equal(realms.active, HOME, "the loader starts before transport");
   for (let i = 0; i < 110; i++) journey.update(0.04, true);
   assert.equal(realms.active, PROJECT_WORLD);
   assert.equal(journey.busy, false);
@@ -159,7 +176,10 @@ test("Enter dives once, unique checkpoints return home once, and reset cancels t
   journey.update(0, true);
   enter();
   assert.equal(journey.busy, true);
+  journey.update(1.4, true);
+  assert.equal(loader.visible, true);
   journey.cancel();
+  assert.equal(loader.visible, false, "reset dismisses the travel loader");
   journey.update(3, true);
   assert.equal(realms.active, HOME);
   assert.equal(journey.busy, false);

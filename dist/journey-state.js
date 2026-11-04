@@ -1,48 +1,38 @@
-import { HOME, PROJECT_WORLD, HOME_POND, PROJECT_POND, HOME_SPAWN, PROJECT_SPAWN } from "./realm-data.js";
-
-const lerp = (a, b, t) => a + (b - a) * t;
+const clamp = (t) => Math.max(0, Math.min(1, t));
 const ease = (t) => t * t * (3 - 2 * t);
 
-/** Pure, frame-independent travel poses. The world switches only under cover. */
-export function createTravel(from, position, reducedMotion = false) {
-  return {
-    from, to: from === HOME ? PROJECT_WORLD : HOME,
-    start: { x: position.x, y: position.y, z: position.z },
-    duration: reducedMotion ? 0.9 : from === HOME ? 3.6 : 2.4,
-    reducedMotion,
-  };
+/** Scene-independent travel timeline: anticipation, shared loader, then arrival. */
+export function createTravel({ from, to, start, destination, spinPond = false, reducedMotion = false }) {
+  const anticipation = reducedMotion ? 0.2 : spinPond ? 1.1 : 0.7;
+  const fadeIn = reducedMotion ? 0.1 : 0.25;
+  const loading = reducedMotion ? 0.4 : 1.7;
+  const reveal = reducedMotion ? 0.2 : 0.45;
+  return { from, to, start: { ...start }, destination: { ...destination },
+    spinPond, reducedMotion, anticipation, fadeIn, loading, reveal,
+    switchAt: anticipation + fadeIn + loading * 0.65,
+    revealAt: anticipation + fadeIn + loading,
+    duration: anticipation + fadeIn + loading + reveal };
 }
 
 export function sampleTravel(travel, elapsed) {
-  const t = Math.max(0, Math.min(1, elapsed / travel.duration));
-  const switchAt = travel.from === HOME ? 0.6 : 0.5;
-  const outbound = t < switchAt;
-  const phase = outbound ? t / switchAt : (t - switchAt) / (1 - switchAt);
-  const destination = travel.to === HOME ? HOME_SPAWN : PROJECT_SPAWN;
-  const exitPond = travel.to === HOME ? HOME_POND : PROJECT_POND;
-  // Completing the trail launches a celebratory jump from the final checkpoint.
-  // Stay where Enter was pressed while the water climbs around the otter.
-  const launch = travel.start;
-  const start = outbound ? travel.start : exitPond;
-  const end = outbound ? launch : destination;
-  const amount = ease(phase);
-  const jump = travel.reducedMotion ? 0.2 : 2.5;
-  const waterDeparture = outbound && travel.from === HOME;
-  const submerge = ease(Math.max(0, Math.min(1, (phase - 0.65) / 0.35)));
-  const y = waterDeparture ? lerp(travel.start.y, -1.4, submerge) : outbound
-    ? lerp(travel.start.y, -1.4, amount) + Math.sin(phase * Math.PI) * jump
-    : lerp(-1.4, 0, amount) + Math.sin(phase * Math.PI) * jump;
+  const time = Math.max(0, elapsed);
+  const switched = time >= travel.switchAt;
+  const anticipating = time < travel.anticipation;
+  const cover = time < travel.revealAt
+    ? ease(clamp((time - travel.anticipation) / travel.fadeIn))
+    : 1 - ease(clamp((time - travel.revealAt) / travel.reveal));
+  const spin = clamp(time / travel.anticipation);
+  const jump = !travel.spinPond && anticipating && !travel.reducedMotion
+    ? Math.sin(spin * Math.PI) * 2.5 : 0;
   return {
-    realm: outbound ? travel.from : travel.to,
-    position: t === 1 ? { ...destination } : { x: lerp(start.x, end.x, amount), y, z: lerp(start.z, end.z, amount) },
-    pitch: travel.reducedMotion || t === 1 || waterDeparture ? 0 : (outbound ? -1 : 1) * Math.sin(phase * Math.PI) * 0.9,
-    swirl: waterDeparture ? ease(Math.min(1, phase / 0.8)) : 0,
-    swirlOrigin: waterDeparture ? travel.start : null,
-    reducedMotion: travel.reducedMotion,
-    // Cover the switch, then reveal the otter emerging from the other pond.
-    cover: outbound
-      ? ease(Math.max(0, Math.min(1, (phase - 0.8) / 0.2)))
-      : 1 - ease(Math.min(1, phase / 0.4)),
-    done: t >= 1,
+    realm: switched ? travel.to : travel.from,
+    position: switched ? { ...travel.destination } : { ...travel.start, y: travel.start.y + jump },
+    pitch: 0,
+    phase: anticipating ? "anticipation" : time < travel.revealAt ? "loading" : "arrival",
+    swirl: travel.spinPond && !switched ? ease(spin) : 0,
+    pondRotation: travel.reducedMotion ? 0 : spin * spin * Math.PI * 3,
+    showLoader: time >= travel.anticipation && time < travel.duration,
+    cover,
+    done: time >= travel.duration,
   };
 }

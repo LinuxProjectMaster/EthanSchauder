@@ -1,0 +1,202 @@
+#loading {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: grid;
+  place-items: center;
+  background: #233e32;
+  overflow: hidden;
+
+  touch-action: none;
+}
+#loading[hidden] { display: none; }
+.loader-glow {
+  position: absolute;
+  width: 75vmin;
+  height: 75vmin;
+  border-radius: 50%;
+  background: radial-gradient(circle, #75906125, transparent 68%);
+  animation: breathe 3s ease-in-out infinite;
+}
+.loader-scene {
+  position: relative;
+  width: min(440px, 90vw);
+  animation: arrive 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.orbit {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.orbit-back {
+  stroke: #c6d1ab;
+  stroke-opacity: 0.18;
+  stroke-width: 1;
+  stroke-dasharray: 3 9;
+}
+.orbit-inner {
+  stroke: #c6d1ab;
+  stroke-opacity: 0.08;
+  stroke-width: 1;
+}
+.land {
+  animation: float 3s ease-in-out infinite;
+}
+.loader-sun {
+  animation: sunrise 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.sun-halo {
+  transform-origin: 294px 97px;
+  animation: halo 3s ease-in-out infinite;
+}
+.runner-wrap {
+  animation: hop 0.36s ease-in-out infinite alternate;
+}
+.arm,
+.leg {
+  transform-box: view-box;
+  animation: stride 0.72s ease-in-out infinite alternate;
+}
+.arm {
+  transform-origin: 216px 157px;
+}
+.leg {
+  transform-origin: 212px 181px;
+}
+.arm-back,
+.leg-front {
+  animation-delay: -0.72s;
+}
+.arm-front,
+.leg-back {
+  animation-delay: 0s;
+}
+.loader-scarf {
+  transform-origin: 226px 156px;
+  animation: scarf 0.36s ease-in-out infinite alternate;
+}
+.speed-lines {
+  animation: wind 0.72s linear infinite;
+}
+.orbiter {
+  transform-origin: 220px 212px;
+  animation: orbit 3s linear infinite;
+}
+.floating-dot {
+  animation: float 2.4s ease-in-out infinite reverse;
+}
+.load-track {
+  position: absolute;
+  bottom: 0;
+  left: calc(50% - 38px);
+  width: 76px;
+  height: 2px;
+  overflow: hidden;
+  background: #d5dfbd20;
+  border-radius: 2px;
+}
+.load-track div {
+  width: 40%;
+  height: 100%;
+  background: #e9bf7b;
+  animation: loading 1.2s ease-in-out infinite;
+}
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes breathe {
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+@keyframes float {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+@keyframes sunrise {
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes halo {
+  50% {
+    transform: scale(1.15);
+    opacity: 0.45;
+  }
+}
+@keyframes hop {
+  to {
+    transform: translateY(-4px);
+  }
+}
+@keyframes stride {
+  from {
+    transform: rotate(-28deg);
+  }
+  to {
+    transform: rotate(28deg);
+  }
+}
+@keyframes scarf {
+  to {
+    transform: rotate(15deg);
+  }
+}
+@keyframes wind {
+  from {
+    transform: translateX(7px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-13px);
+    opacity: 0;
+  }
+}
+@keyframes orbit {
+  from {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-168px, 72px);
+  }
+  50% {
+    transform: translate(-336px, 0);
+  }
+  75% {
+    transform: translate(-168px, -72px);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+@keyframes loading {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(360%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #loading * {
+    animation: none !important;
+  }
+}
+

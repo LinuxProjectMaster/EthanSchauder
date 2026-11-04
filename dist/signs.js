@@ -177,7 +177,7 @@ export function createSignReader(signs, onProjectRead = () => {}, onRuneActivate
     transitionPage(true);
     document.body.classList.add("section-view");
     document.title = `${title} · Ethan Schauder`;
-    page.scrollTop = 0;
+    page.querySelector(".section-article").scrollTop = 0;
     page.querySelector("h1").focus({ preventScroll: true });
     prompt.hidden = true;
   }

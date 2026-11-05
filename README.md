@@ -1,4 +1,4 @@
-# Little Roamer
+# Ethan Schauder
 
 [Live portfolio](https://linuxprojectmaster.github.io/EthanSchauder/) · [Source](https://github.com/LinuxProjectMaster/EthanSchauder)
 

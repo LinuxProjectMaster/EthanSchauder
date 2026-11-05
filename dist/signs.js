@@ -74,7 +74,7 @@ export function createSignReader(signs, onRuneActivate = () => ({ x: innerWidth 
       document.body.classList.remove("section-view");
       for (const [element, inert] of inertElements) element.inert = inert;
       inertElements.clear();
-      document.title = "Little Roamer";
+      document.title = "Ethan Schauder";
       if (lastFocus?.isConnected) lastFocus.focus({ preventScroll: true });
     });
   }

@@ -12,12 +12,13 @@ export function createSignReader(signs, onRuneActivate = () => ({ x: innerWidth 
   page.hidden = true;
   page.innerHTML = `
     <article class="section-article" aria-labelledby="section-title">
-      <div class="section-mark" aria-hidden="true">✧</div>
-      <p class="section-eyebrow"></p>
-      <h1 id="section-title" tabindex="-1"></h1>
+      <header class="section-heading">
+        <p class="section-eyebrow"></p>
+        <h1 id="section-title" tabindex="-1"></h1>
+      </header>
       <div class="section-content">
-        <div class="section-copy"></div>
         <img class="section-portrait" hidden />
+        <div class="section-copy"></div>
       </div>
       <div class="section-technologies"></div>
       <div class="section-links"></div>
@@ -86,10 +87,12 @@ export function createSignReader(signs, onRuneActivate = () => ({ x: innerWidth 
     activeSign = sign;
     closing = false;
     page.inert = false;
-    page.classList.toggle("project-page", !sign.runic);
+    page.classList.toggle("portrait-page", !!sign.image);
     const title = sign.title.toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase());
     page.querySelector("h1").textContent = title;
-    page.querySelector(".section-eyebrow").textContent = sign.label ?? "A LITTLE FURTHER ALONG THE TRAIL";
+    const eyebrow = page.querySelector(".section-eyebrow");
+    eyebrow.textContent = sign.label ?? "A LITTLE FURTHER ALONG THE TRAIL";
+    eyebrow.hidden = !eyebrow.textContent;
     const copy = page.querySelector(".section-copy");
     copy.replaceChildren();
     const portrait = page.querySelector(".section-portrait");

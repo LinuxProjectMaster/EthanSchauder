@@ -1,4 +1,4 @@
-/** Pale lavender smoke and fine embers match the section pages, with depth and drag. */
+/** Black smoke and drifting charcoal dust match the section pages, with depth and drag. */
 export function createRuneDust() {
   const canvas = document.createElement("canvas");
   canvas.id = "rune-dust";
@@ -35,8 +35,8 @@ export function createRuneDust() {
       const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
       const duration = reduced ? 320 : 2000;
       const started = performance.now();
-      smoke ??= glow("224,208,237");
-      spark ??= glow("245,240,247");
+      smoke ??= glow("0,0,0");
+      spark ??= glow("10,10,10");
       const particles = Array.from({ length: 280 }, (_, i) => ({
         phase: i * 2.399963,
         radius: Math.sqrt((i * 73 % 281) / 281),
@@ -59,8 +59,8 @@ export function createRuneDust() {
         context.globalCompositeOperation = "source-over";
         context.globalAlpha = 1;
         const wash = reduced ? p : Math.max(0, (p - 0.5) / 0.5);
-        // Match the section page's #f5f0f7 background at the end of the reveal.
-        context.fillStyle = `rgba(245, 240, 247, ${wash})`;
+        // Match the section page's #111111 background at the end of the reveal.
+        context.fillStyle = `rgba(17, 17, 17, ${wash})`;
         context.fillRect(0, 0, w, h);
         if (!reduced) {
           const spread = Math.hypot(w, h) * Math.pow(p, 1.6) * 0.8;
@@ -84,11 +84,11 @@ export function createRuneDust() {
               context.drawImage(smoke, x - size, y - size * 0.6, size * 2, size * 1.2);
             } else {
               const size = particle.size * particle.depth;
-              context.globalCompositeOperation = "lighter";
+              context.globalCompositeOperation = "source-over";
               context.globalAlpha = fade * 0.65;
               context.drawImage(spark, x - size * 5, y - size * 5, size * 10, size * 10);
-              // A short curved glint follows the local flow, instead of square confetti.
-              context.strokeStyle = "#f5f0f7";
+              // A short curved dust trail follows the local flow, instead of square confetti.
+              context.strokeStyle = "#080808";
               context.lineWidth = Math.max(0.5, size * 0.55);
               context.lineCap = "round";
               context.beginPath();

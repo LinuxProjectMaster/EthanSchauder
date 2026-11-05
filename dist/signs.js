@@ -88,7 +88,7 @@ export function createSignReader(signs, onRuneActivate = () => ({ x: innerWidth 
     closing = false;
     page.inert = false;
     page.classList.toggle("portrait-page", !!sign.image);
-    const title = sign.title.toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase());
+    const title = sign.pageTitle ?? sign.title.toLowerCase().replace(/\b\w/g, (letter) => letter.toUpperCase());
     page.querySelector("h1").textContent = title;
     const eyebrow = page.querySelector(".section-eyebrow");
     eyebrow.textContent = sign.label ?? "A LITTLE FURTHER ALONG THE TRAIL";

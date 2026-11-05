@@ -13,7 +13,7 @@ export const HOME_SIGNS = [
     text: "Hi!\n\nI’m Ethan, and I’m a software developer from Leesburg, Virginia.\n\nI’m currently attending the University of Virginia for my Bachelor’s of Science in Computer Science, and hope to graduate by May 2029.\n\nMost of my work is astronomy-related, but there are some random side projects in the mix. You can check out my projects by diving into the pond!",
   },
   {
-    x: 0, z: 0, title: "BEHIND THE SCENES", groundLines: ["BEHIND THE", "SCENES"], label: "HOW THIS SITE WAS BUILT",
+    x: 0, z: 0, title: "BEHIND THE SCENES", pageTitle: "Behind the Scenes", groundLines: ["BEHIND THE", "SCENES"], label: "HOW THIS SITE WAS BUILT",
     text: "This portfolio is a little world you can explore. It uses WebGL and Three.js for the 3D scenery, lighting, camera, and animation, with HTML, CSS, and JavaScript for the interface.\n\nEach scene is assembled from reusable components: terrain, ponds, signs, glowing runes, and project exhibits. Walk onto a rune to read a page, or dive into the pond to explore my projects.\n\nThe animated otter comes from Cozy Animals 3D Models by Gamideo (dragofive), released under CC0.\n\nHeavily inspired by the portfolio site of Bruno Simon—check his site out, it’s insane!",
     technologies: "WebGL · Three.js · JavaScript · HTML · CSS",
     links: [

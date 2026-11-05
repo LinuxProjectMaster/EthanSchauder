@@ -23,7 +23,7 @@ export const HOME_SIGNS = [
   },
   {
     x: 6, z: 5, title: "CONTACTS", label: "LET’S CONNECT",
-    text: "Have a project in mind, a question, or just want to say hello? Let’s connect.",
+    text: "Feel free to reach out! I don't bite I promise.",
     links: [
       { label: "schauderethan@gmail.com", url: "mailto:schauderethan@gmail.com" },
       { label: "LinkedIn ↗", url: "https://www.linkedin.com/in/ethan-schauder-29b497309/" },

@@ -47,7 +47,7 @@ See [the scene authoring guide](docs/adding-scenes.md) for the complete componen
 
 ## Publishing
 
-GitHub Pages publishes `dist/` through `.github/workflows/pages.yml` after every push to `main`. Syntax checks and the test suite must pass before deployment. No dependency installation or build is required. In repository Settings → Pages, choose GitHub Actions as the publishing source.
+GitHub Pages stages `dist/` with versioned script/style URLs and publishes it through `.github/workflows/pages.yml` after every push to `main`. Syntax checks and the test suite must pass before deployment. No dependency installation or build is required. In repository Settings → Pages, choose GitHub Actions as the publishing source.
 
 All browser modules, assets, fonts, and styles use relative URLs, so the site works under a repository path such as `/EthanSchauder/`. Section routes use URL hashes and need no server rewrites. `.openai/hosting.json` retains the separate Sites identity; it is outside the Pages artifact.
 

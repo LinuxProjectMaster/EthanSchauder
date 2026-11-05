@@ -18,10 +18,11 @@ jobs:
           node-version: 22
       - run: npm run check
       - run: npm test
+      - run: node scripts/prepare-pages.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: dist
+          path: .pages
   deploy:
     needs: verify
     runs-on: ubuntu-latest

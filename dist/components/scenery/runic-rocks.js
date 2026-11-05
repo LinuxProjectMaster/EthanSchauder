@@ -58,8 +58,8 @@ export function createRunicRocks(scene, rocks) {
     const light = new THREE.PointLight("#b56cff", 0, 5);
     light.position.y = .8;
     group.add(light);
-    createGroundText(scene, { lines: [rock.title], x: rock.x, z: rock.z + 2,
-      width: 4.8, height: .7, angle: 0, color: "#55506b" });
+    createGroundText(scene, { lines: rock.groundLines ?? [rock.title], x: rock.x, z: rock.z + 2,
+      width: 4.8, height: rock.groundLines ? 1.2 : .7, angle: 0, color: "#55506b" });
     return { rock, material, light, charge: 0 };
   });
   let active = null;

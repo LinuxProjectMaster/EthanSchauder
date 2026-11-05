@@ -7,6 +7,7 @@ const types = {
   ".js": "text/javascript",
   ".css": "text/css",
   ".png": "image/png",
+  ".jpg": "image/jpeg",
   ".wav": "audio/wav",
   ".mp3": "audio/mpeg",
   ".m4a": "audio/mp4",

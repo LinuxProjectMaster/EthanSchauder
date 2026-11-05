@@ -9,7 +9,8 @@ export const PROJECT_POND = { x: 0, z: 5, radiusX: 4.6, radiusZ: 3.2 };
 export const HOME_SIGNS = [
   {
     x: -5.5, z: 5, title: "ABOUT", label: "MEET ETHAN",
-    text: "Hi, I’m Ethan Schauder, a computer science student at the University of Virginia. I build software that brings together machine learning, full-stack development, and a curiosity about space. Dive into the pond to explore a few things I’ve made.",
+    image: { src: "./assets/ethan.jpg", alt: "Ethan Schauder", width: 975, height: 1600 },
+    text: "Hi!\n\nI’m Ethan, and I’m a software developer from Leesburg, Virginia. I’m currently attending the University of Virginia for my Bachelor’s of Science in Computer Science, and hope to graduate by May 2029. Most of my work is astronomy-related, but there are some random side projects in the mix. You can check out my projects by diving into the pond!",
   },
   {
     x: 5.5, z: 5, title: "EDUCATION", label: "UNIVERSITY OF VIRGINIA",

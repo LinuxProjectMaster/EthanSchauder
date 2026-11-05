@@ -15,7 +15,10 @@ export function createSignReader(signs, onRuneActivate = () => ({ x: innerWidth 
       <div class="section-mark" aria-hidden="true">✧</div>
       <p class="section-eyebrow"></p>
       <h1 id="section-title" tabindex="-1"></h1>
-      <div class="section-copy"></div>
+      <div class="section-content">
+        <div class="section-copy"></div>
+        <img class="section-portrait" hidden />
+      </div>
       <div class="section-technologies"></div>
       <div class="section-links"></div>
     </article>
@@ -89,11 +92,27 @@ export function createSignReader(signs, onRuneActivate = () => ({ x: innerWidth 
     page.querySelector(".section-eyebrow").textContent = sign.label ?? "A LITTLE FURTHER ALONG THE TRAIL";
     const copy = page.querySelector(".section-copy");
     copy.replaceChildren();
+    const portrait = page.querySelector(".section-portrait");
+    portrait.hidden = !sign.image;
+    page.querySelector(".section-content").classList.toggle("has-portrait", !!sign.image);
+    if (sign.image) {
+      portrait.src = sign.image.src;
+      portrait.alt = sign.image.alt;
+      portrait.width = sign.image.width;
+      portrait.height = sign.image.height;
+      portrait.decoding = "async";
+    } else {
+      portrait.removeAttribute("src");
+      portrait.alt = "";
+    }
     // Give the original copy room to breathe without changing its content.
     const sentences = sign.text.match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g) ?? [sign.text];
-    for (let i = 0; i < sentences.length; i += 2) {
+    const paragraphs = sign.text.includes("\n\n")
+      ? sign.text.split(/\n\n+/)
+      : Array.from({ length: Math.ceil(sentences.length / 2) }, (_, i) => sentences.slice(i * 2, i * 2 + 2).join("").trim());
+    for (const text of paragraphs) {
       const paragraph = document.createElement("p");
-      paragraph.textContent = sentences.slice(i, i + 2).join("").trim();
+      paragraph.textContent = text;
       copy.append(paragraph);
     }
     const tech = page.querySelector(".section-technologies");

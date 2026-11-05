@@ -14,11 +14,12 @@ export const HOME_SIGNS = [
   },
   {
     x: 0, z: 0, title: "CREDITS", pageTitle: "Credits", routeAliases: ["interests", "behind-the-scenes"], label: "HOW THIS SITE WAS BUILT",
-    text: "This portfolio is a little world you can explore. It uses WebGL and Three.js for the 3D scenery, lighting, camera, and animation, with HTML, CSS, and JavaScript for the interface.\n\nEach scene is assembled from reusable components: terrain, ponds, signs, glowing runes, and project exhibits. Walk onto a rune to read a page, or dive into the pond to explore my projects.\n\nThe animated otter comes from Cozy Animals 3D Models by Gamideo (dragofive), released under CC0.\n\nHeavily inspired by the portfolio site of Bruno Simon—check his site out, it’s insane!",
+    text: "This portfolio is a little world you can explore. It uses WebGL and Three.js for the 3D scenery, lighting, camera, and animation, with HTML, CSS, and JavaScript for the interface.\n\nEach scene is assembled from reusable components: terrain, ponds, signs, glowing runes, and project exhibits. Walk onto a rune to read a page, or dive into the pond to explore my projects.\n\nThe animated otter comes from Cozy Animals 3D Models by Gamideo (dragofive), released under CC0.\n\nBuilt with help from ChatGPT for coding, design iteration, and debugging.\n\nHeavily inspired by the portfolio site of Bruno Simon—check his site out, it’s insane!",
     technologies: "WebGL · Three.js · JavaScript · HTML · CSS",
     links: [
       { label: "Bruno Simon’s portfolio ↗", url: "https://bruno-simon.com/" },
       { label: "Otter model by Gamideo (CC0) ↗", url: "https://dragofive.itch.io/cozy-animals-3d" },
+      { label: "ChatGPT ↗", url: "https://chatgpt.com/" },
     ],
   },
   {

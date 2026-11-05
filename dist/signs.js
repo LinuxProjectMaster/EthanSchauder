@@ -153,7 +153,8 @@ export function createSignReader(signs, onRuneActivate = () => ({ x: innerWidth 
   function syncRoute() {
     dust.cancel();
     pending = false;
-    const selected = signs.find((sign) => route(sign) === location.hash);
+    const selected = signs.find((sign) => route(sign) === location.hash
+      || sign.routeAliases?.some((alias) => `#/section/${alias}` === location.hash));
     if (selected) render(selected);
     else hidePage();
   }

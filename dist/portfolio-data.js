@@ -11,7 +11,7 @@ export const PROTON_PROJECTOR = {
   z: 20,
   title: "PROTON PROJECTOR",
   label: "PROJECT 01 · STELLAR GATEWAY QUEST",
-  text: "A machine-learning application for predicting solar proton flux using live NOAA data. A Darts Temporal Fusion Transformer forecasts proton flux, using future electron and low-energy proton values predicted by an RNN. The Flask backend and React-Bootstrap interface let users configure hyperparameters, train the model, and visualize its forecasts. Awarded third place at Stellar Gateway Quest.",
+  text: "Proton Projector was a machine-learning application that predicted solar proton flux using live NOAA data. A Darts Temporal Fusion Transformer generated proton-flux forecasts using future electron and low-energy proton values predicted by an RNN. The Flask backend and React-Bootstrap interface allowed users to configure hyperparameters, train the model, and visualize its forecasts. The project earned third place at Stellar Gateway Quest.",
   technologies: "Darts · TFT · RNN · Flask · React-Bootstrap · NumPy · pandas",
   url: "https://devpost.com/software/proton-projector",
 };
@@ -22,7 +22,7 @@ export const NEURIPS_ARIEL = {
   z: 34,
   title: "NEURIPS ARIEL CHALLENGE",
   label: "PROJECT 02 · SILVER MEDAL · 2025",
-  text: "Silver medalist in the NeurIPS Ariel Data Challenge 2025. Developed Bayesian and machine-learning models to predict exoplanet transmission spectra using Gaussian Process Regression, detrending, and feature engineering, outperforming 96% of more than 850 competing teams. Extended the model into an applied exoplanet study and presented the research at the Regional Science and Engineering Fair under the mentorship of Dr. Yifan Zhou at UVA Astronomy.",
+  text: "Earned a silver medal in the NeurIPS Ariel Data Challenge 2025. Developed Bayesian and machine-learning models that predicted exoplanet transmission spectra using Gaussian Process Regression, detrending, and feature engineering, and outperformed 96% of more than 850 competing teams. Extended the model into an applied exoplanet study and presented the research at the Regional Science and Engineering Fair under the mentorship of Dr. Yifan Zhou at UVA Astronomy.",
   technologies:
     "Bayesian modeling · Machine learning · Gaussian Process Regression · Detrending · Feature engineering",
   url: "https://www.kaggle.com/code/ethanjschauder/submission-pipeline-final",
@@ -35,7 +35,7 @@ export const CHRONOPEDIA = {
   z: 48,
   title: "CHRONOPEDIA",
   label: "PROJECT 03 · ACADEMIESHACKS 2025",
-  text: "A time-travelling encyclopedia that reimagines Wikipedia articles for a user-selected year and language. A Flask backend retrieves article content and uses DeepSeek with Hugging Face to generate the alternate-time text, which is presented in a Svelte interface. Text-to-speech makes the experience more accessible. Ethan built the Flask backend and the gTTS text-to-speech accessibility features.",
+  text: "Chronopedia was a time-travelling encyclopedia that reimagined Wikipedia articles for a user-selected year and language. A Flask backend retrieved article content and used DeepSeek with Hugging Face to generate the alternate-time text, which was presented in a Svelte interface. Text-to-speech made the experience more accessible. Ethan built the Flask backend and the gTTS text-to-speech accessibility features.",
   technologies: "Flask · Python · DeepSeek · Hugging Face · Svelte · gTTS",
   url: "https://devpost.com/software/chronopedia",
 };

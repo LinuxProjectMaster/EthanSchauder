@@ -8,21 +8,21 @@ export const PROJECT_POND = { x: 0, z: 5, radiusX: 4.6, radiusZ: 3.2 };
 
 export const HOME_SIGNS = [
   {
-    x: -5.5, z: 5, title: "ABOUT", label: "",
+    x: -6, z: 5, title: "ABOUT", label: "",
     image: { src: "./assets/ethan.jpg", alt: "Ethan Schauder", width: 975, height: 1600 },
     text: "Hi!\n\nI’m Ethan, and I’m a software developer from Leesburg, Virginia.\n\nI’m currently attending the University of Virginia for my Bachelor’s of Science in Computer Science, and hope to graduate by May 2029.\n\nMost of my work is astronomy-related, but there are some random side projects in the mix. You can check out my projects by diving into the pond!",
   },
   {
-    x: 5.5, z: 5, title: "EDUCATION", label: "UNIVERSITY OF VIRGINIA",
-    text: "I study computer science at the University of Virginia. My interests reach from building useful web applications to exploring machine learning and aerospace. My exoplanet research was mentored by Dr. Yifan Zhou at UVA Astronomy.",
+    x: 0, z: 0, title: "INTERESTS", label: "HOW THIS SITE WAS BUILT",
+    text: "This portfolio is a little world you can explore. It uses WebGL and Three.js for the 3D scenery, lighting, camera, and animation, with HTML, CSS, and JavaScript for the interface.\n\nEach scene is assembled from reusable components: terrain, ponds, signs, glowing runes, and project exhibits. Walk onto a rune to read a page, or dive into the pond to explore my projects.\n\nThe animated otter comes from Cozy Animals 3D Models by Gamideo (dragofive), released under CC0.\n\nHeavily inspired by the portfolio site of Bruno Simon—check his site out, it’s insane!",
+    technologies: "WebGL · Three.js · JavaScript · HTML · CSS",
+    links: [
+      { label: "Bruno Simon’s portfolio ↗", url: "https://bruno-simon.com/" },
+      { label: "Otter model by Gamideo (CC0) ↗", url: "https://dragofive.itch.io/cozy-animals-3d" },
+    ],
   },
   {
-    x: -6.5, z: -1, title: "INTERESTS", label: "WHAT I LIKE TO BUILD",
-    text: "Machine learning, full-stack development, and aerospace. My projects include forecasting solar proton flux, predicting exoplanet spectra, and building an accessible, time-travelling encyclopedia.",
-    technologies: "Python · Flask · React · Svelte · Bayesian modeling",
-  },
-  {
-    x: 6.5, z: -1, title: "CONTACTS", label: "LET’S CONNECT",
+    x: 6, z: 5, title: "CONTACTS", label: "LET’S CONNECT",
     text: "Have a project in mind, a question, or just want to say hello? Let’s connect.",
     links: [
       { label: "schauderethan@gmail.com", url: "mailto:schauderethan@gmail.com" },

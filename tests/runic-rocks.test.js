@@ -4,7 +4,7 @@ import { isOnRune, RUNE_RADIUS } from "../dist/components/scenery/runic-rocks.js
 import { HOME_SIGNS, HOME_SPAWN } from "../dist/realm-data.js";
 
 test("welcome rocks trigger only when the otter is grounded on their footprint", () => {
-  assert.deepEqual(HOME_SIGNS.map((rock) => rock.title).sort(), ["ABOUT", "CONTACTS", "EDUCATION", "INTERESTS"]);
+  assert.deepEqual(HOME_SIGNS.map((rock) => rock.title).sort(), ["ABOUT", "CONTACTS", "INTERESTS"]);
   for (const rock of HOME_SIGNS) {
     assert.equal(rock.runic, true);
     assert.equal(isOnRune(HOME_SPAWN, rock), false);
